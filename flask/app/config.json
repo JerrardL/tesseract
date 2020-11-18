@@ -1,0 +1,30 @@
+{
+  "allowed_extensions": [
+    "pdf",
+    "png",
+    "gif",
+    "jpeg",
+    "jpg",
+    "txt"
+  ],
+  "meta_endpoint": "http://tika:9998/meta",
+  "ocr_endpoint": "http://tika:9998/tika",
+  "host_zero": "0.0.0.0",
+  "enrichments": [
+    {
+      "ocr_enrichments": [
+        "image/png",
+        "image/jpg",
+        "image/gif",
+        "application/pdf"
+      ]
+    },
+    {
+      "captioning": [
+        "image/png",
+        "image/jpg",
+        "image/gif"
+      ]
+    }
+  ]
+}
