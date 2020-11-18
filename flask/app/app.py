@@ -8,7 +8,6 @@ app = Flask(__name__)
 # Upload folder destination & set allowed extensions
 upload_folder = './uploaded'
 allowed_extensions = None
-
 app.config['upload_folder'] = upload_folder
 
 #Check file extension is valid
@@ -70,6 +69,5 @@ if __name__ == "__main__":
         meta_endpoint = config["meta_endpoint"]
         ocr_endpoint = config["ocr_endpoint"]
         host_zero = config["host_zero"]
-        print(allowed_extensions)
 
     app.run(host=host_zero, debug=True)
