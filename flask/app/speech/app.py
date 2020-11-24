@@ -1,9 +1,7 @@
+import json
 from os import getenv
 
-from concurrent.futures import ThreadPoolExecutor
-from sanic import Sanic
-from sanic.response import json
-from sanic.exceptions import InvalidUsage
+from flask import Flask, request, flash, redirect, render_template, jsonify
 
 from .engine import SpeechToTextEngine
 
@@ -11,19 +9,16 @@ from .engine import SpeechToTextEngine
 MAX_ENGINE_WORKERS = int(getenv('MAX_ENGINE_WORKERS', 2))
 
 engine = SpeechToTextEngine()
-executor = ThreadPoolExecutor(max_workers=MAX_ENGINE_WORKERS)
 
-app = Sanic()
+app = Flask(__name__)
 
 # Main Route:
 # Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
-async def stt(request):
-    speech = request.body
-    if not speech:
-        raise InvalidUsage("Missing \"speech\" payload.")
-    text = await app.loop.run_in_executor(executor, lambda: engine.run(speech))
-    return json({'text': text})
+def stt():
+    speech = request.get_data()
+    text = engine.run(speech)
+    return jsonify({"text": text})
 
 
 if __name__ == '__main__':
