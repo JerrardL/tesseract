@@ -20,28 +20,33 @@ def allowed_file(filename):
 def format_response(file):
     headers = {'Accept': 'application/json'}
     nlp_headers = {'Content-Type': 'application/json'}
+    # Send file through to Tika for metadata
     resp_meta = requests.put(meta_endpoint, data=file, headers=headers)
     meta = resp_meta.json()
-    resp_extraction = requests.put(ocr_endpoint, data=file)
-    extracted = resp_extraction.text
-    extraction = extracted.replace('\n', ' ')
-    
+    # Create JSON structure
+    formatted_response = {
+        "meta": meta,
+        "extractions": []
+    }
+    # Check Content-Type of file
+    # Attempt to get speech recognition if audio file via DeepSpeech
+    if meta["Content-Type"] in speech:
+        speech_response = requests.post(speech_endpoint, data=file)
+        extraction = speech_response.json()["text"]
+        formatted_response["extractions"].append({"speech_extraction": extraction})
+    # If not audio file, attempt to perform ocr text extraction via Tika
+    else:
+        ocr_response = requests.put(ocr_endpoint, data=file)
+        extraction = ocr_response.text.replace('\n', ' ')
+        formatted_response["extractions"].append({"ocr_extraction": extraction})
+   # If text was extracted from the file, attempt to perform nlp via Scapy 
     if extraction:
         nlp_data = {'text': extraction, 'model': 'en'}
         nlp_response = requests.post(nlp_endoint, data=json.dumps(nlp_data), headers=nlp_headers)
         nlp_extraction = nlp_response.json()
-    else:
-        nlp_extraction = "No data."
-    # Create JSON structure
-    formatted_response = {
-        "meta": meta,
-        "extractions": [
-            {
-                "ocr_extraction": extraction,
-                "nlp_extraction": nlp_extraction
-            }
-        ]
-    }
+        if nlp_extraction:
+            formatted_response["extractions"].append({"nlp_extraction": nlp_extraction})
+
     #Format JSON
     formatted_response_json = json.dumps(formatted_response, indent=4)
 
@@ -62,6 +67,8 @@ if __name__ == "__main__":
         meta_endpoint = config["meta_endpoint"]
         ocr_endpoint = config["ocr_endpoint"]
         nlp_endoint = config["nlp_endpoint"]
+        speech_endpoint = config["speech_endpoint"]
+        speech = config["enrichments"]["speech_recognition"]
         host_zero = config["host_zero"]
 
 # Optional Route?:

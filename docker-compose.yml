@@ -26,3 +26,15 @@ services:
         depends_on:
             - tika
 
+    deepspeech:
+        container_name: deepspeech
+        build: ./flask/app/speech
+        ports:
+            - '8001:8001'
+        restart: 'unless-stopped'
+        volumes:
+            - './flask/app/speech/model.pbmm:/app/model.pbmm:ro'
+        depends_on:
+            - tika
+
+
