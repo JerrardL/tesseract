@@ -16,3 +16,13 @@ services:
         image: "apache/tika:1.24-full"
         ports:
             - "9998:9998"
+
+    spacy:
+        container_name: spacy
+        image: jgontrum/spacyapi:en_v2
+        ports:
+            - "8100:8000"
+        restart: always
+        depends_on:
+            - tika
+

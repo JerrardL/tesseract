@@ -9,6 +9,7 @@
   ],
   "meta_endpoint": "http://tika:9998/meta",
   "ocr_endpoint": "http://tika:9998/tika",
+  "nlp_endpoint": "http://spacy:8000/ent",
   "host_zero": "0.0.0.0",
   "enrichments": [
     {
