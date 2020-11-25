@@ -2,12 +2,12 @@ version: "3"
 
 services:
     flask:
-        build: ./flask
+        build: .
         container_name: flask
         ports:
             - "5001:5000"
         volumes: 
-            - ./flask/app:/app
+            - ./app:/app
         depends_on: 
             - tika
     
@@ -28,13 +28,12 @@ services:
 
     deepspeech:
         container_name: deepspeech
-        build: ./flask/app/speech
+        build: ./app/speech
         ports:
             - '8001:8001'
         restart: 'unless-stopped'
         volumes:
-            - './flask/app/speech/model.pbmm:/app/model.pbmm:ro'
+            - './model.pbmm:/app/model.pbmm:ro'
         depends_on:
             - tika
-
 

@@ -1,0 +1,45 @@
+{
+  "bind_host": "0.0.0.0",
+  "enrichments": {
+    "Meta": {
+      "endpoint": "http://tika:9998/meta",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "supported_types": []
+    },
+    "OCR": {
+      "endpoint": "http://tika:9998/tika",
+      "headers": {},
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif",
+        "application/pdf"
+      ]
+    },
+    "DeepSpeech": {
+      "endpoint": "http://deepspeech:8001",
+      "headers": {},
+      "supported_types": [
+        "audio/aac",
+        "audio/vnd.wave",
+        "audio/mpeg",
+        "audio/wav",
+        "audi/webm",
+        "video/mpeg",
+        "video/wemb"
+      ]
+    },
+    "NLP": {
+      "endpoint": "http://spacy:8000/ent",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "supported_types": [
+        "text/plain"
+      ]
+    }
+  }
+}
