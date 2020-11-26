@@ -50,8 +50,8 @@ class ModelPredictAPI(PredictAPI):
 
         result = {'status': 'error'}
         args = image_parser.parse_args()
-        if not args['image'].mimetype.endswith(('jpg', 'jpeg', 'png')):
-            abort(400, 'Invalid file type/extension. Please provide an image in JPEG or PNG format.')
+        # if not args['image'].mimetype.endswith(('jpg', 'jpeg', 'png')):
+        #     abort(400, 'Invalid file type/extension. Please provide an image in JPEG or PNG format.')
         image_data = args['image'].read()
 
         preds = self.model_wrapper.predict(image_data)

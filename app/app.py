@@ -5,6 +5,7 @@ from enrichments.Meta import Meta
 from enrichments.DeepSpeech import DeepSpeech
 from enrichments.NLP import NLP
 from enrichments.OCR import OCR
+from enrichments.Captioning import Captioning
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -19,6 +20,7 @@ def process_enrichments(data):
     deep_speech = DeepSpeech(config)
     ocr = OCR(config)
     nlp = NLP(config)
+    captioning = Captioning(config)
 
     # Send file through to Tika for metadata
     meta_response = meta.execute(data)
@@ -44,6 +46,11 @@ def process_enrichments(data):
         nlp_response = nlp.execute(response)
         if nlp_response:
             formatted_response["extractions"].append({"nlp_extraction": nlp_response})
+    # If the file was an image, attempt to perform image captioning via Tensorflow
+    if content_type in captioning.supported_types:
+        captioning_response = captioning.execute(data)
+        formatted_response["extractions"].append({"image_captioning": captioning_response})
+
 
     # Format JSON
     formatted_response_json = json.dumps(formatted_response, indent=4)
