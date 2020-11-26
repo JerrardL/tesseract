@@ -27,13 +27,21 @@ services:
             - tika
 
     deepspeech:
-        container_name: deepspeech
         build: ./app/speech
+        container_name: deepspeech
         ports:
             - '8001:8001'
         restart: 'unless-stopped'
         volumes:
             - './model.pbmm:/app/model.pbmm:ro'
         depends_on:
+            - tika
+
+    tensorflow:
+        build: ./app/captioning
+        container_name: tensorflow
+        ports:
+            - "5500:5000"
+        depends_on: 
             - tika
 

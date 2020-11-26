@@ -8,19 +8,18 @@ from enrichments.OCR import OCR
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
-# Upload folder destination & set allowed extensions
-upload_folder = './uploaded'
 config = None
-app.config['upload_folder'] = upload_folder
 
 
 # Function to format the response
 def process_enrichments(data):
 
+    # Init classes
     meta = Meta(config)
     deep_speech = DeepSpeech(config)
     ocr = OCR(config)
     nlp = NLP(config)
+
     # Send file through to Tika for metadata
     meta_response = meta.execute(data)
 

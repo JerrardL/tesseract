@@ -40,6 +40,16 @@
       "supported_types": [
         "text/plain"
       ]
+    },
+    "Captioning": {
+      "endpoint": "",
+      "headers": {},
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif"
+      ]
     }
   }
 }

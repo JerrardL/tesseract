@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+    tensorflow:
+        build: .
+        container_name: tensorflow
+        ports:
+            - "5500:5000"
+
