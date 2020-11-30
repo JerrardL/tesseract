@@ -19,8 +19,8 @@
         "application/pdf"
       ]
     },
-    "DeepSpeech": {
-      "endpoint": "http://deepspeech:8001",
+    "Speech": {
+      "endpoint": "http://speech_recognition:8001",
       "headers": {},
       "supported_types": [
         "audio/aac",
@@ -33,7 +33,7 @@
       ]
     },
     "NLP": {
-      "endpoint": "http://spacy:8000/ent",
+      "endpoint": "http://nlp:8000/ent",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -42,7 +42,7 @@
       ]
     },
     "Captioning": {
-      "endpoint": "http://tensorflow:5000/model/predict",
+      "endpoint": "http://captioning:5000/model/predict",
       "headers": {
         "Content-Type": "multipart/form-data"
       },

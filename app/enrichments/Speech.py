@@ -3,7 +3,7 @@ import requests
 from enrichments.Enrichment import Enrichment
 
 
-class DeepSpeech(Enrichment):
+class Speech(Enrichment):
 
     def __init__(self, config):
         super().__init__(config)

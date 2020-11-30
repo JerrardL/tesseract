@@ -2,7 +2,7 @@ from flask import Flask, request
 import json
 
 from enrichments.Meta import Meta
-from enrichments.DeepSpeech import DeepSpeech
+from enrichments.Speech import Speech
 from enrichments.NLP import NLP
 from enrichments.OCR import OCR
 from enrichments.Captioning import Captioning
@@ -17,7 +17,7 @@ def process_enrichments(data):
 
     # Init classes
     meta = Meta(config)
-    deep_speech = DeepSpeech(config)
+    speech_recognition = Speech(config)
     ocr = OCR(config)
     nlp = NLP(config)
     captioning = Captioning(config)
@@ -34,8 +34,8 @@ def process_enrichments(data):
     # Check Content-Type of file
     content_type = meta_response["Content-Type"]
     # Attempt to get speech recognition if audio file via DeepSpeech
-    if content_type in deep_speech.supported_types:
-        response = deep_speech.execute(data)
+    if content_type in speech_recognition.supported_types:
+        response = speech_recognition.execute(data)
         formatted_response["extractions"].append({"speech_extraction": response})
     # If not audio file, attempt to perform ocr text extraction via Tika
     else:
