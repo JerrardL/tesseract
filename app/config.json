@@ -53,6 +53,37 @@
         "image/gif"
       ],
       "probability_threshold" : 0.0005
+    },
+    "Classification": {
+      "endpoint": "http://classification:5050",
+      "headers": {},
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif"
+      ]
+    },
+    "Categorisation": {
+      "endpoint": "http://categorisation:5000",
+      "headers": {},
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif",
+        "video/mpeg",
+        "video/wemb"
+      ],
+      "category_data": {
+        "Violent": ["rifle", "handgun", "firearm", "blade", "knife", "blood"],
+        "Location": ["beach", "park", "forest", "river", "garden", "mountain"],
+        "Dogs": ["poodle", "labrador", "great dane", "chihuahua", "pug", "bulldog"],
+        "Vehicle": ["car", "van", "truck", "hatchback", "bus", "lorry"],
+        "People": ["man", "woman", "child", "baby", "girl", "boy"],
+        "Clothing": ["jacket", "shorts", "skirt", "trousers", "hat", "shirt"],
+        "Activities": ["swimming", "running", "walking", "cycling", "jogging", "golfing"]
+      }
     }
   }
 }

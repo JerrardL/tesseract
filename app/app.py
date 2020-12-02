@@ -6,6 +6,7 @@ from enrichments.Speech import Speech
 from enrichments.NLP import NLP
 from enrichments.OCR import OCR
 from enrichments.Captioning import Captioning
+from enrichments.Classification import Classification
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -21,6 +22,7 @@ def process_enrichments(data):
     ocr = OCR(config)
     nlp = NLP(config)
     captioning = Captioning(config)
+    classification = Classification(config)
 
     # Send file through to Tika for metadata
     meta_response = meta.execute(data)
@@ -50,6 +52,12 @@ def process_enrichments(data):
     if content_type in captioning.supported_types:
         captioning_response = captioning.execute(data)
         formatted_response["extractions"].append({"image_captioning": captioning_response})
+        # Attempt to classify the image via keras
+        classification_response = classification.execute(data)
+        formatted_response["extractions"].append({"classification": classification_response})
+        # If a classification was extracted, attempt to categorise the prediction via gloVe
+        # if classification_response:
+        #     best_category = formatted_response["extractions"]
 
 
     # Format JSON

@@ -1,6 +1,12 @@
 version: "3"
 
-services:
+services:   
+    tika:
+        container_name: tika
+        image: "apache/tika:1.24-full"
+        ports:
+            - "9998:9998"
+
     flask:
         build: .
         container_name: flask
@@ -10,12 +16,6 @@ services:
             - ./app:/app
         depends_on: 
             - tika
-    
-    tika:
-        container_name: tika
-        image: "apache/tika:1.24-full"
-        ports:
-            - "9998:9998"
 
     nlp:
         container_name: nlp
@@ -45,3 +45,10 @@ services:
         depends_on: 
             - tika
 
+    classification:
+        build: ./app/classification
+        container_name: classification
+        ports:
+            - "5050:5000"
+        depends_on: 
+            - tika

@@ -1,7 +1,7 @@
 import json
 from os import getenv
 
-from flask import Flask, request, flash, redirect, render_template, jsonify
+from flask import Flask, request, jsonify
 
 from .engine import SpeechToTextEngine
 
