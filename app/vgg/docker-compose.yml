@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+    flask:
+        build: .
+        container_name: flask
+        ports:
+            - "5001:5000"
+        volumes: 
+            - ./app/vgg:/app/vgg

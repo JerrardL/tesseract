@@ -5,3 +5,6 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 Werkzeug==1.0.1
+Keras~=2.4.3
+numpy~=1.19.4
+maxfw~=1.1.3
