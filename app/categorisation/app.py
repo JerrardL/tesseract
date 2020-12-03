@@ -5,6 +5,15 @@ import numpy as np
 
 app = Flask(__name__)
 
+embeddings_index = {}
+with open('/glove/glove.6B.300d.txt', encoding="utf8") as f:
+    for line in f:
+        values = line.split()
+        word = values[0]
+        embed = np.array(values[1:], dtype=np.float32)
+        embeddings_index[word] = embed
+print('Loaded %s word vectors.' % len(embeddings_index))
+
 # Main Route:
 # Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
@@ -16,15 +25,6 @@ def categorise():
     low_prediction = classification_json["predictions"]["Low Prediction"]["Prediction"]
 
     categories = {word: key for key, words in category_data.items() for word in words}
-
-    embeddings_index = {}
-    with open('/glove/glove.6B.300d.txt', encoding="utf8") as f:
-        for line in f:
-            values = line.split()
-            word = values[0]
-            embed = np.array(values[1:], dtype=np.float32)
-            embeddings_index[word] = embed
-    print('Loaded %s word vectors.' % len(embeddings_index))
     # Embeddings for available words
     data_embeddings = {key: value for key, value in embeddings_index.items() if key in categories.keys()}
 
@@ -60,6 +60,7 @@ def categorise():
     def process(query):
         query_embed = embeddings_index[query.lower()]
         scores = {}
+        highest_key = {}
         for word, embed in data_embeddings.items():
             category = categories[word]
             dist = query_embed.dot(embed)

@@ -8,14 +8,13 @@ from tensorflow.keras.applications.inception_resnet_v2 import preprocess_input, 
 from PIL import Image
 
 app = Flask(__name__)
+model = InceptionResNetV2(classes=1000, weights='imagenet')
 
 # Main Route:
 # Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
 def classify():
     image_data = request.get_data()
-    model = InceptionResNetV2(classes=1000, weights='imagenet')
-
 
     img = Image.open(io.BytesIO(image_data))
     img = img.resize((224, 244), Image.ANTIALIAS)

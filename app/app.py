@@ -1,6 +1,6 @@
 from flask import Flask, request
 import json
-
+# Import enrichments
 from enrichments.Meta import Meta
 from enrichments.Speech import Speech
 from enrichments.NLP import NLP
@@ -12,7 +12,6 @@ from enrichments.Categorisation import Categorisation
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
 config = None
-
 
 # Function to format the response
 def process_enrichments(data):
@@ -44,7 +43,7 @@ def process_enrichments(data):
     # If not audio file, attempt to perform ocr text extraction via Tika
     else:
         response = ocr.execute(data)
-        formatted_response["extractions"].append({"ocr_extraction": response})
+        formatted_response["extractions"].append(response)
     # If text was extracted from the file, attempt to perform nlp via Scapy
     if response:
         nlp_response = nlp.execute(response)
@@ -62,13 +61,10 @@ def process_enrichments(data):
             category_response = categorisation.execute(classification_response)
             formatted_response["extractions"].append({"categories": category_response})
 
-
-
     # Format JSON
     formatted_response_json = json.dumps(formatted_response, indent=4)
 
     return formatted_response_json
-
 
 # Main Route:
 # Use POST method with binary and file to upload via Postman
@@ -76,7 +72,6 @@ def process_enrichments(data):
 def upload_binary_file():
     file_as_binary = request.get_data()
     return process_enrichments(file_as_binary)
-
 
 # Run server, Define config values
 if __name__ == "__main__":
