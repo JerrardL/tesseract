@@ -9,4 +9,6 @@ RUN wget -nv --show-progress --progress=bar:force:noscroll http://nlp.stanford.e
 unzip glove.6B.zip && \
 rm -f glove.6B.zip
 
+COPY . /glove
+
 CMD python app.py

@@ -52,3 +52,11 @@ services:
             - "5050:5000"
         depends_on: 
             - tika
+
+    categorisation:
+        build: ./app/categorisation
+        container_name: categorisation
+        ports:
+            - "6060:5000"
+        depends_on: 
+            - classification

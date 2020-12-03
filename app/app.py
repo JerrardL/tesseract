@@ -7,6 +7,7 @@ from enrichments.NLP import NLP
 from enrichments.OCR import OCR
 from enrichments.Captioning import Captioning
 from enrichments.Classification import Classification
+from enrichments.Categorisation import Categorisation
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -23,6 +24,7 @@ def process_enrichments(data):
     nlp = NLP(config)
     captioning = Captioning(config)
     classification = Classification(config)
+    categorisation = Categorisation(config)
 
     # Send file through to Tika for metadata
     meta_response = meta.execute(data)
@@ -56,8 +58,10 @@ def process_enrichments(data):
         classification_response = classification.execute(data)
         formatted_response["extractions"].append({"classification": classification_response})
         # If a classification was extracted, attempt to categorise the prediction via gloVe
-        # if classification_response:
-        #     best_category = formatted_response["extractions"]
+        if classification_response:
+            category_response = categorisation.execute(classification_response)
+            formatted_response["extractions"].append({"categories": category_response})
+
 
 
     # Format JSON

@@ -65,8 +65,10 @@
       ]
     },
     "Categorisation": {
-      "endpoint": "http://categorisation:5000",
-      "headers": {},
+      "endpoint": "http://categorisation:6060",
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "supported_types": [
         "image/png",
         "image/jpg",
