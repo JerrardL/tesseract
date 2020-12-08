@@ -60,3 +60,11 @@ services:
             - "6060:5000"
         depends_on: 
             - classification
+
+    language:
+        build: ./app/language
+        container_name: language
+        ports:
+            - "2468:5000"
+        depends_on: 
+            - tika

@@ -16,5 +16,4 @@ class Speech(Enrichment):
         speech_response = requests.post(self.endpoint, data=data)
         extraction = speech_response.json()["text"]
         elapsed_time = time.time() - start_time
-        extraction.update({"time_taken": elapsed_time})
-        return extraction
+        return {"extraction": extraction, "time_taken": elapsed_time}

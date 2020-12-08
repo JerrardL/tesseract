@@ -8,6 +8,7 @@ from enrichments.OCR import OCR
 from enrichments.Captioning import Captioning
 from enrichments.Classification import Classification
 from enrichments.Categorisation import Categorisation
+from enrichments.Language import Language
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -26,6 +27,69 @@ def process_enrichments(data):
     classification = Classification(config)
     categorisation = Categorisation(config)
 
+    # METADATA
+    # Send file through to Tika for metadata
+    meta_response = meta.execute(data)
+
+    # Create JSON structure
+    formatted_response = {
+        "meta": meta_response,
+        "extractions": []
+    }
+
+    # Check Content-Type of file
+    content_type = meta_response["Content-Type"]
+    # SPEECH RECOGNITION
+    # Attempt to get speech recognition if audio file via DeepSpeech
+    if content_type in speech_recognition.supported_types:
+        response = speech_recognition.execute(data)
+        formatted_response["extractions"].append({"speech_extraction": response})
+        if response["extraction"]:
+            # NLP
+            # If text was extracted from the file, attempt to perform nlp via Scapy
+            nlp_response = nlp.execute(response["extraction"])
+            formatted_response["extractions"].append({"nlp_extraction": nlp_response})
+    # If not audio file, attempt to perform ocr text extraction via Tika
+    else:
+        response = ocr.execute(data)
+        formatted_response["extractions"].append(response)
+        # If OCR response was blank or whitespace do not perform NLP
+        if response["ocr_extraction"] == ocr_errmsg:
+            # IMAGE CAPTIONING
+            # If the file was an image, attempt to perform image captioning via Tensorflow
+            if content_type in captioning.supported_types:
+                captioning_response = captioning.execute(data)
+                formatted_response["extractions"].append({"image_captioning": captioning_response})
+                # IMAGE CLASSIFICATION
+                # Attempt to classify the image via keras
+                classification_response = classification.execute(data)
+                formatted_response["extractions"].append({"classification": classification_response})
+                # If the image cannot be classified or encounters and error, do not perform categorisation
+                if "Error" not in classification_response:
+                    # IMAGE CATEGORISATION    
+                    # If a classification was extracted, attempt to categorise the prediction via gloVe
+                    if classification_response:
+                        category_response = categorisation.execute(classification_response)
+                        formatted_response["extractions"].append({"categories": category_response})
+        elif response["ocr_extraction"]:
+            # NLP
+            # If text was extracted from the file, attempt to perform nlp via Scapy
+            nlp_response = nlp.execute(response["ocr_extraction"])
+            formatted_response["extractions"].append({"nlp_extraction": nlp_response})
+
+    # Format JSON
+    formatted_response_json = json.dumps(formatted_response, indent=4)
+
+    return formatted_response_json
+
+def language_detection(data):
+    
+    # Init classes
+    meta = Meta(config)
+    speech_recognition = Speech(config)
+    ocr = OCR(config)
+    language = Language(config)
+
     # Send file through to Tika for metadata
     meta_response = meta.execute(data)
 
@@ -41,30 +105,19 @@ def process_enrichments(data):
     if content_type in speech_recognition.supported_types:
         response = speech_recognition.execute(data)
         formatted_response["extractions"].append({"speech_extraction": response})
+        # Attempt to detect language of speech here via langdetect:
+        language = language.execute(response["extraction"])
+        formatted_response["extractions"].append({"language_detected": language})
     # If not audio file, attempt to perform ocr text extraction via Tika
     else:
         response = ocr.execute(data)
         formatted_response["extractions"].append(response)
-        # If OCR response was blank or whitespace do not perform NLP
-        if response["ocr_extraction"] == ocr_errmsg:
-            # If the file was an image, attempt to perform image captioning via Tensorflow
-            if content_type in captioning.supported_types:
-                captioning_response = captioning.execute(data)
-                formatted_response["extractions"].append({"image_captioning": captioning_response})
-                # Attempt to classify the image via keras
-                classification_response = classification.execute(data)
-                formatted_response["extractions"].append({"classification": classification_response})
-                # If the image cannot be classified or encounters and error, do not perform categorisation
-                if "Error" not in classification_response:    
-                    # If a classification was extracted, attempt to categorise the prediction via gloVe
-                    if classification_response:
-                        category_response = categorisation.execute(classification_response)
-                        formatted_response["extractions"].append({"categories": category_response})
-        elif response["ocr_extraction"]:
-            # If text was extracted from the file, attempt to perform nlp via Scapy
-            nlp_response = nlp.execute(response["ocr_extraction"])
-            formatted_response["extractions"].append({"nlp_extraction": nlp_response})
-
+        # Attempt to detect language of text here via langdetect:
+        language = language.execute(response["ocr_extraction"])
+        formatted_response["extractions"].append({"language_detected": language})
+    # TODO Attempt to translate text if not english
+    formatted_response["extractions"].append({"translation": "TO BE CONFIGURED"})
+  
     # Format JSON
     formatted_response_json = json.dumps(formatted_response, indent=4)
 
@@ -76,6 +129,13 @@ def process_enrichments(data):
 def upload_binary_file():
     file_as_binary = request.get_data()
     return process_enrichments(file_as_binary)
+
+# Language Route:
+# Use POST method with binary and file to upload via Postman
+@app.route('/lang', methods=['POST'])
+def upload_binary_language_file():
+    file_as_binary = request.get_data()
+    return language_detection(file_as_binary)
 
 # Run server, Define config values
 if __name__ == "__main__":
