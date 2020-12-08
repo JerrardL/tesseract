@@ -15,6 +15,8 @@ class OCR(Enrichment):
         # Attempt to get speech recognition if audio file via DeepSpeech
         ocr_response = requests.put(self.endpoint, data=data)
         extraction = ocr_response.text.replace('\n', ' ')
+        if extraction.isspace():
+            extraction = "NO OCR EXTRACTION FOUND"
         elapsed_time = time.time() - start_time
         return {"ocr_extraction": extraction, "time_taken": elapsed_time}
 

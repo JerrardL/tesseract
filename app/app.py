@@ -12,6 +12,7 @@ from enrichments.Categorisation import Categorisation
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
 config = None
+ocr_errmsg = "NO OCR EXTRACTION FOUND"
 
 # Function to format the response
 def process_enrichments(data):
@@ -44,22 +45,25 @@ def process_enrichments(data):
     else:
         response = ocr.execute(data)
         formatted_response["extractions"].append(response)
-    # If text was extracted from the file, attempt to perform nlp via Scapy
-    if response:
-        nlp_response = nlp.execute(response)
-        if nlp_response:
+        # If OCR response was blank or whitespace do not perform NLP
+        if response["ocr_extraction"] == ocr_errmsg:
+            # If the file was an image, attempt to perform image captioning via Tensorflow
+            if content_type in captioning.supported_types:
+                captioning_response = captioning.execute(data)
+                formatted_response["extractions"].append({"image_captioning": captioning_response})
+                # Attempt to classify the image via keras
+                classification_response = classification.execute(data)
+                formatted_response["extractions"].append({"classification": classification_response})
+                # If the image cannot be classified or encounters and error, do not perform categorisation
+                if "Error" not in classification_response:    
+                    # If a classification was extracted, attempt to categorise the prediction via gloVe
+                    if classification_response:
+                        category_response = categorisation.execute(classification_response)
+                        formatted_response["extractions"].append({"categories": category_response})
+        elif response["ocr_extraction"]:
+            # If text was extracted from the file, attempt to perform nlp via Scapy
+            nlp_response = nlp.execute(response["ocr_extraction"])
             formatted_response["extractions"].append({"nlp_extraction": nlp_response})
-    # If the file was an image, attempt to perform image captioning via Tensorflow
-    if content_type in captioning.supported_types:
-        captioning_response = captioning.execute(data)
-        formatted_response["extractions"].append({"image_captioning": captioning_response})
-        # Attempt to classify the image via keras
-        classification_response = classification.execute(data)
-        formatted_response["extractions"].append({"classification": classification_response})
-        # If a classification was extracted, attempt to categorise the prediction via gloVe
-        if classification_response:
-            category_response = categorisation.execute(classification_response)
-            formatted_response["extractions"].append({"categories": category_response})
 
     # Format JSON
     formatted_response_json = json.dumps(formatted_response, indent=4)

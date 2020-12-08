@@ -18,5 +18,5 @@ class NLP(Enrichment):
         nlp_response = requests.post(self.endpoint, data=json.dumps(body), headers=self.headers)
         nlp_extraction = nlp_response.json()
         elapsed_time = time.time() - start_time
-        nlp_extraction.update({"time_taken": elapsed_time})
+        nlp_extraction.append({"time_taken": elapsed_time})
         return nlp_extraction
