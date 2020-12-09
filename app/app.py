@@ -9,6 +9,8 @@ from enrichments.Captioning import Captioning
 from enrichments.Classification import Classification
 from enrichments.Categorisation import Categorisation
 from enrichments.Language import Language
+from pydub import AudioSegment
+from io import BytesIO
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -93,6 +95,8 @@ def language_detection(data):
     # Send file through to Tika for metadata
     meta_response = meta.execute(data)
 
+
+
     # Create JSON structure
     formatted_response = {
         "meta": meta_response,
@@ -123,6 +127,26 @@ def language_detection(data):
 
     return formatted_response_json
 
+def video(data):
+
+    speech_recognition = Speech(config)
+
+        # Create JSON structure
+    formatted_response = {
+        "extractions": []
+    }
+
+    audio = AudioSegment.from_file(BytesIO(data), 'mp4').export(BytesIO(data), format="wav")
+    #data = audio.export(data, format="wav")
+    audio.seek(0)
+    response = speech_recognition.execute(audio)
+    formatted_response["extractions"].append({"speech_extraction": response})
+
+    # Format JSON
+    formatted_response_json = json.dumps(formatted_response, indent=4)
+    return formatted_response_json
+
+
 # Main Route:
 # Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
@@ -136,6 +160,13 @@ def upload_binary_file():
 def upload_binary_language_file():
     file_as_binary = request.get_data()
     return language_detection(file_as_binary)
+
+# Test Video Route:
+# Use POST method with binary and file to upload via Postman
+@app.route('/video', methods=['POST'])
+def upload_binary_video_file():
+    file_as_binary = request.get_data()
+    return video(file_as_binary)
 
 # Run server, Define config values
 if __name__ == "__main__":

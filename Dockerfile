@@ -1,8 +1,8 @@
 FROM python:rc-alpine3.12
 
-RUN pip3 install --upgrade pip \
-    && pip3 install flask \ 
-    && pip3 install requests
+RUN apk add --no-cache ffmpeg
+
+RUN pip3 install --upgrade pip flask requests pydub
 
 WORKDIR /app
 
