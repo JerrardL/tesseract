@@ -5,6 +5,9 @@ from flask import Flask, request, jsonify
 
 from .engine import SpeechToTextEngine
 
+from pydub import AudioSegment
+from io import BytesIO
+
 
 MAX_ENGINE_WORKERS = int(getenv('MAX_ENGINE_WORKERS', 2))
 
@@ -18,6 +21,16 @@ app = Flask(__name__)
 def stt():
     speech = request.get_data()
     text = engine.run(speech)
+    return jsonify({"text": text})
+
+# Main Route:
+# Use POST method with binary and file to upload via Postman
+@app.route('/video', methods=['POST'])
+def convert_video():
+    video = request.get_data()
+    audio = AudioSegment.from_file(BytesIO(video), 'mp4').export(BytesIO(video), format="wav")
+    audio.seek(0)
+    text = engine.run_video(audio)
     return jsonify({"text": text})
 
 

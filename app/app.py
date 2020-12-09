@@ -9,6 +9,7 @@ from enrichments.Captioning import Captioning
 from enrichments.Classification import Classification
 from enrichments.Categorisation import Categorisation
 from enrichments.Language import Language
+from enrichments.Video import Video
 from pydub import AudioSegment
 from io import BytesIO
 
@@ -28,6 +29,7 @@ def process_enrichments(data):
     captioning = Captioning(config)
     classification = Classification(config)
     categorisation = Categorisation(config)
+    video = Video(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -41,9 +43,21 @@ def process_enrichments(data):
 
     # Check Content-Type of file
     content_type = meta_response["Content-Type"]
+
+    # SPEECH RECOGNITION for VIDEO
+    # If VIDEO FILE, attempt to convert video file to audio for extraction, via pydub
+    # Then attempt to do speech recognition on the new audio file
+    if content_type in video.supported_types:
+        video_extraction = video.execute(data)
+        formatted_response["extractions"].append({"video_extraction": video_extraction})
+        if video_extraction["extraction"]:
+            # NLP
+            # If text was extracted from the file, attempt to perform nlp via Scapy
+            nlp_response = nlp.execute(video_extraction["extraction"])
+            formatted_response["extractions"].append({"nlp_extraction": nlp_response})
     # SPEECH RECOGNITION
-    # Attempt to get speech recognition if audio file via DeepSpeech
-    if content_type in speech_recognition.supported_types:
+    # If AUDIO FILE, attempt to get speech recognition if audio file via DeepSpeech
+    elif content_type in speech_recognition.supported_types:
         response = speech_recognition.execute(data)
         formatted_response["extractions"].append({"speech_extraction": response})
         if response["extraction"]:
@@ -51,7 +65,7 @@ def process_enrichments(data):
             # If text was extracted from the file, attempt to perform nlp via Scapy
             nlp_response = nlp.execute(response["extraction"])
             formatted_response["extractions"].append({"nlp_extraction": nlp_response})
-    # If not audio file, attempt to perform ocr text extraction via Tika
+    # If NOT AUDIO OR VIDEO FILE, attempt to perform ocr text extraction via Tika
     else:
         response = ocr.execute(data)
         formatted_response["extractions"].append(response)
@@ -137,7 +151,6 @@ def video(data):
     }
 
     audio = AudioSegment.from_file(BytesIO(data), 'mp4').export(BytesIO(data), format="wav")
-    #data = audio.export(data, format="wav")
     audio.seek(0)
     response = speech_recognition.execute(audio)
     formatted_response["extractions"].append({"speech_extraction": response})

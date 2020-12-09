@@ -29,7 +29,8 @@
         "audio/wav",
         "audi/webm",
         "video/mpeg",
-        "video/wemb"
+        "video/wemb",
+        "video/mp4"
       ]
     },
     "NLP": {
@@ -75,7 +76,8 @@
         "image/jpeg",
         "image/gif",
         "video/mpeg",
-        "video/wemb"
+        "video/wemb",
+        "video/mp4"
       ],
       "category_data": {
         "Violent": ["rifle", "handgun", "firearm", "blade", "knife", "blood"],
@@ -104,7 +106,17 @@
         "audio/wav",
         "audi/webm",
         "video/mpeg",
-        "video/wemb"
+        "video/wemb",
+        "video/mp4"
+      ]
+    },
+    "Video": {
+      "endpoint": "http://speech_recognition:8001/video",
+      "headers": {},
+      "supported_types": [
+        "video/mpeg",
+        "video/wemb",
+        "video/mp4"
       ]
     }
   }

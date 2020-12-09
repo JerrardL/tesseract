@@ -26,3 +26,11 @@ class SpeechToTextEngine:
             audio = np.frombuffer(wav.readframes(wav.getnframes()), np.int16)
         result = self.model.stt(audio_buffer=audio)
         return result
+
+    def run_video(self, audio):
+        with wave.Wave_read(audio) as wav:
+            audio = np.frombuffer(wav.readframes(wav.getnframes()), np.int16)
+        result = self.model.stt(audio_buffer=audio)
+        return result
+
+    
