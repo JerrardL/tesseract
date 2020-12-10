@@ -28,9 +28,10 @@ def stt():
 @app.route('/video', methods=['POST'])
 def convert_video():
     video = request.get_data()
-    audio = AudioSegment.from_file(BytesIO(video), 'mp4').export(BytesIO(video), format="wav")
-    audio.seek(0)
-    text = engine.run_video(audio)
+    video_to_audio = AudioSegment.from_file(BytesIO(video), 'mp4').export(BytesIO(video), format="wav")
+    video_to_audio.seek(0)
+    audio = video_to_audio.read()
+    text = engine.run(audio)
     return jsonify({"text": text})
 
 
