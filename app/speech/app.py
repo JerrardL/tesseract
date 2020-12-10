@@ -1,4 +1,3 @@
-import json
 from os import getenv
 
 from flask import Flask, request, jsonify
@@ -28,7 +27,8 @@ def stt():
 @app.route('/video', methods=['POST'])
 def convert_video():
     video = request.get_data()
-    video_to_audio = AudioSegment.from_file(BytesIO(video), 'mp4').export(BytesIO(video), format="wav")
+    video_to_audio = AudioSegment.from_file(
+        BytesIO(video), 'mp4').export(BytesIO(video), format="wav")
     video_to_audio.seek(0)
     audio = video_to_audio.read()
     text = engine.run(audio)
