@@ -118,6 +118,15 @@
         "video/wemb",
         "video/mp4"
       ]
+    },
+    "VideoOR": {
+      "endpoint": "VIDEO OR ENDPOINT HERE",
+      "headers": {},
+      "supported_types": [
+        "video/mpeg",
+        "video/wemb",
+        "video/mp4"
+      ]
     }
   }
 }

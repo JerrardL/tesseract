@@ -1,1 +1,4 @@
 /app/vgg/*.txt
+/app/video_or/videos/*.mp4
+/app/video_or/videos/*.avi
+/app/video_or/*.h5
