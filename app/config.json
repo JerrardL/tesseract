@@ -120,7 +120,7 @@
       ]
     },
     "VideoOR": {
-      "endpoint": "VIDEO OR ENDPOINT HERE",
+      "endpoint": "http://video_object_recognition:8181",
       "headers": {},
       "supported_types": [
         "video/mpeg",

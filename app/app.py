@@ -10,8 +10,7 @@ from enrichments.Classification import Classification
 from enrichments.Categorisation import Categorisation
 from enrichments.Language import Language
 from enrichments.Video import Video
-from pydub import AudioSegment
-from io import BytesIO
+from enrichments.VideoOR import VideoOR
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -30,6 +29,7 @@ def process_enrichments(data):
     classification = Classification(config)
     categorisation = Categorisation(config)
     video = Video(config)
+    video_object_recognition = VideoOR(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -44,10 +44,15 @@ def process_enrichments(data):
     # Check Content-Type of file
     content_type = meta_response["Content-Type"]
 
-    # SPEECH RECOGNITION for VIDEO
-    # If VIDEO FILE, attempt to convert video file to audio for extraction, via pydub
-    # Then attempt to do speech recognition on the new audio file
+    # VIDEO FILES
+        # VIDEO OBJECT RECOGNITION
+        # If VIDEO FILE, first attempt to perform object recogntion via imageAI
     if content_type in video.supported_types:
+        video_or_extraction = video_object_recognition.execute(data)
+        formatted_response["extractions"].append({"video_object_recognition": video_or_extraction})
+        # SPEECH RECOGNITION for VIDEO
+            # Then attempt to convert video file to audio for extraction, via pydub
+            # Then attempt to do speech recognition on the new audio file via DeepSpeech
         video_extraction = video.execute(data)
         formatted_response["extractions"].append({"video_extraction": video_extraction})
         if video_extraction["extraction"]:
@@ -55,14 +60,15 @@ def process_enrichments(data):
             # If text was extracted from the file, attempt to perform nlp via Scapy
             nlp_response = nlp.execute(video_extraction["extraction"])
             formatted_response["extractions"].append({"nlp_extraction": nlp_response})
-    # SPEECH RECOGNITION
-    # If AUDIO FILE, attempt to get speech recognition if audio file via DeepSpeech
+    # AUDIO FILES
+        # SPEECH RECOGNITION
+            # If AUDIO FILE, attempt to get speech recognition if audio file via DeepSpeech
     elif content_type in speech_recognition.supported_types:
         response = speech_recognition.execute(data)
         formatted_response["extractions"].append({"speech_extraction": response})
         if response["extraction"]:
             # NLP
-            # If text was extracted from the file, attempt to perform nlp via Scapy
+                # If text was extracted from the file, attempt to perform nlp via Scapy
             nlp_response = nlp.execute(response["extraction"])
             formatted_response["extractions"].append({"nlp_extraction": nlp_response})
     # If NOT AUDIO OR VIDEO FILE, attempt to perform ocr text extraction via Tika
@@ -72,24 +78,24 @@ def process_enrichments(data):
         # If OCR response was blank or whitespace do not perform NLP
         if response["ocr_extraction"] == ocr_errmsg:
             # IMAGE CAPTIONING
-            # If the file was an image, attempt to perform image captioning via Tensorflow
+                # If the file was an image, attempt to perform image captioning via Tensorflow
             if content_type in captioning.supported_types:
                 captioning_response = captioning.execute(data)
                 formatted_response["extractions"].append({"image_captioning": captioning_response})
                 # IMAGE CLASSIFICATION
-                # Attempt to classify the image via keras
+                    # Attempt to classify the image via keras
                 classification_response = classification.execute(data)
                 formatted_response["extractions"].append({"classification": classification_response})
                 # If the image cannot be classified or encounters and error, do not perform categorisation
                 if "Error" not in classification_response:
                     # IMAGE CATEGORISATION    
-                    # If a classification was extracted, attempt to categorise the prediction via gloVe
+                        # If a classification was extracted, attempt to categorise the prediction via gloVe
                     if classification_response:
                         category_response = categorisation.execute(classification_response)
                         formatted_response["extractions"].append({"categories": category_response})
         elif response["ocr_extraction"]:
             # NLP
-            # If text was extracted from the file, attempt to perform nlp via Scapy
+                # If text was extracted from the file, attempt to perform nlp via Scapy
             nlp_response = nlp.execute(response["ocr_extraction"])
             formatted_response["extractions"].append({"nlp_extraction": nlp_response})
 
@@ -141,25 +147,6 @@ def language_detection(data):
 
     return formatted_response_json
 
-def video(data):
-
-    speech_recognition = Speech(config)
-
-        # Create JSON structure
-    formatted_response = {
-        "extractions": []
-    }
-
-    audio = AudioSegment.from_file(BytesIO(data), 'mp4').export(BytesIO(data), format="wav")
-    audio.seek(0)
-    response = speech_recognition.execute(audio)
-    formatted_response["extractions"].append({"speech_extraction": response})
-
-    # Format JSON
-    formatted_response_json = json.dumps(formatted_response, indent=4)
-    return formatted_response_json
-
-
 # Main Route:
 # Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
@@ -173,13 +160,6 @@ def upload_binary_file():
 def upload_binary_language_file():
     file_as_binary = request.get_data()
     return language_detection(file_as_binary)
-
-# Test Video Route:
-# Use POST method with binary and file to upload via Postman
-@app.route('/video', methods=['POST'])
-def upload_binary_video_file():
-    file_as_binary = request.get_data()
-    return video(file_as_binary)
 
 # Run server, Define config values
 if __name__ == "__main__":

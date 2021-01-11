@@ -68,3 +68,11 @@ services:
             - "2468:5000"
         depends_on: 
             - tika
+
+    video_object_recognition:
+        build: ./app/video_or
+        container_name: video_object_recognition
+        ports:
+            - "8181:5000"
+        depends_on:
+            - tika

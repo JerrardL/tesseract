@@ -1,6 +1,7 @@
 from flask import Flask, request
 from imageai.Detection import VideoObjectDetection
 import os
+import operator
 from io import BytesIO
 
 app = Flask(__name__)
@@ -9,6 +10,7 @@ app = Flask(__name__)
 # Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
 def video_or():
+    video_file = request.get_data()
     execution_path = os.getcwd()
 
     total_unique_output = {}
@@ -30,12 +32,17 @@ def video_or():
     detector.setModelTypeAsYOLOv3()
     detector.setModelPath( os.path.join(execution_path , "yolo.h5"))
     detector.loadModel()
-    video_path = detector.detectObjectsFromVideo(input_file_path="/videos/traffic-mini.mp4",
-                                output_file_path="/videos/traffic_detected_new",
-                                frames_per_second=20, log_progress=True, display_object_name=True, per_frame_function=forFrame)
-    print(video_path)
+    detector.detectObjectsFromVideo(input_file_path=video_file,
+                            frames_per_second=20, log_progress=True, display_object_name=True, save_detected_video=False, per_frame_function=forFrame)
 
-    print("Total output count for unique objects found in video : ", total_unique_output)
+    # sorted_unique_output = dict( sorted(total_unique_output.items(), key=operator.itemgetter(1),reverse=True))
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000)
+    video_or_json = {
+        "Output count for unique objects": total_unique_output
+    }
+
+    # print(video_path)
+    return video_or_json
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8181)
