@@ -52,7 +52,9 @@ def process_enrichments(data):
         formatted_response["extractions"].append({"video_object_recognition": video_or_extraction})
         # VIDEO CATEGORISATION
             # If objects were detected, attempt to categorise the three most populous objects via gloVe
-
+        if video_or_extraction:
+            category_response = categorisation.execute(video_or_extraction)
+            formatted_response["extractions"].append({"categories": category_response})
         # SPEECH RECOGNITION for VIDEO
             # Then attempt to convert video file to audio for extraction, via pydub
             # Then attempt to do speech recognition on the new audio file via DeepSpeech
