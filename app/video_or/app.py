@@ -1,7 +1,9 @@
 from flask import Flask, request
 from imageai.Detection import VideoObjectDetection
 import os
+import cv2
 import operator
+from collections import OrderedDict
 from io import BytesIO
 
 app = Flask(__name__)
@@ -13,7 +15,7 @@ def video_or():
     video_file = request.get_data()
     execution_path = os.getcwd()
 
-    total_unique_output = {}
+    total_unique_output = OrderedDict()
 
     def forFrame(frame_number, output_array, output_count):
 
@@ -24,24 +26,25 @@ def video_or():
             else:
                 total_unique_output[key] = int(value)
 
-        # print("FOR FRAME " , frame_number)
-        # print("Output count for unique objects : ", output_count)
-        # print("------------END OF A FRAME --------------")
+    video_path = open('/tmp/video_file', 'wb')
+    video_path.write(video_file)
+    video_path.close()
 
     detector = VideoObjectDetection()
     detector.setModelTypeAsYOLOv3()
     detector.setModelPath( os.path.join(execution_path , "yolo.h5"))
     detector.loadModel()
-    detector.detectObjectsFromVideo(input_file_path=video_file,
+    detector.detectObjectsFromVideo(input_file_path="/tmp/video_file",
                             frames_per_second=20, log_progress=True, display_object_name=True, save_detected_video=False, per_frame_function=forFrame)
 
-    # sorted_unique_output = dict( sorted(total_unique_output.items(), key=operator.itemgetter(1),reverse=True))
+    os.remove('/tmp/video_file')
+
+    sorted_unique_output = sorted(total_unique_output.items(), key=operator.itemgetter(1), reverse=True)
 
     video_or_json = {
-        "Output count for unique objects": total_unique_output
+        "Unique Object Count": sorted_unique_output
     }
 
-    # print(video_path)
     return video_or_json
 
 if __name__ == '__main__':

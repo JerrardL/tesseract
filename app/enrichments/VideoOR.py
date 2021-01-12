@@ -15,5 +15,5 @@ class VideoOR(Enrichment):
         video_response = requests.post(self.endpoint, data=data)
         video_extraction = video_response.json()
         elapsed_time = time.time() - start_time
-        video_response.update({"time_taken": elapsed_time})
+        video_extraction.update({"time_taken": elapsed_time})
         return video_extraction
