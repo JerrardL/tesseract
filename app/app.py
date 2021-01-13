@@ -11,6 +11,9 @@ from enrichments.Categorisation import Categorisation
 from enrichments.Language import Language
 from enrichments.Video import Video
 from enrichments.VideoOR import VideoOR
+from enrichments.VideoCategorisation import VideoCategorisation
+
+import sys
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -30,6 +33,7 @@ def process_enrichments(data):
     categorisation = Categorisation(config)
     video = Video(config)
     video_object_recognition = VideoOR(config)
+    video_categorisation = VideoCategorisation(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -53,7 +57,7 @@ def process_enrichments(data):
         # VIDEO CATEGORISATION
             # If objects were detected, attempt to categorise the three most populous objects via gloVe
         if video_or_extraction:
-            category_response = categorisation.execute(video_or_extraction)
+            category_response = video_categorisation.execute(video_or_extraction['Unique Object Count'])
             formatted_response["extractions"].append({"categories": category_response})
         # SPEECH RECOGNITION for VIDEO
             # Then attempt to convert video file to audio for extraction, via pydub

@@ -127,6 +127,26 @@
         "video/wemb",
         "video/mp4"
       ]
+    },
+    "VideoCategorisation": {
+      "endpoint": "http://categorisation:6060/video",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "supported_types": [
+        "video/mpeg",
+        "video/wemb",
+        "video/mp4"
+      ],
+      "category_data": {
+        "Violent": ["rifle", "handgun", "firearm", "blade", "knife", "blood"],
+        "Location": ["beach", "park", "forest", "river", "garden", "mountain"],
+        "Dogs": ["poodle", "labrador", "great dane", "chihuahua", "pug", "bulldog"],
+        "Vehicle": ["car", "van", "truck", "hatchback", "bus", "lorry"],
+        "People": ["man", "woman", "child", "baby", "girl", "boy"],
+        "Clothing": ["jacket", "shorts", "skirt", "trousers", "hat", "shirt"],
+        "Activities": ["swimming", "running", "walking", "cycling", "jogging", "golfing"]
+      }
     }
   }
 }

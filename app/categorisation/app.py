@@ -83,7 +83,79 @@ def categorise():
 
 @app.route('/video', methods=['POST'])
 def categorise_video():
-    pass
+    video_objects_json = request.get_json()
+    category_data = video_objects_json["category_data"]
+    best_prediction = video_objects_json["predictions"]["Best Prediction"]
+    if video_objects_json["predictions"]["Mid Prediction"]:
+        mid_prediction = video_objects_json["predictions"]["Mid Prediction"]
+    else:
+        mid_prediction = None
+    if video_objects_json["predictions"]["Low Prediction"]:
+        low_prediction = video_objects_json["predictions"]["Low Prediction"]
+    else:
+        low_prediction = None
+
+    categories = {word: key for key, words in category_data.items() for word in words}
+    # Embeddings for available words
+    data_embeddings = {key: value for key, value in embeddings_index.items() if key in categories.keys()}
+
+    def get_video_category(query): 
+        result = None
+        # Try to process the query without modification
+        try:
+            result = process_video(query)
+            return result
+        except KeyError:
+            pass
+        # Try to join the word
+        try:
+            result = process_video(query.replace("_", ""))
+            return result
+        except KeyError:
+            pass
+        # Try to split string on underscore and take last word
+        try:
+            result = process_video(query.split("_")[-1])
+            return result
+        except KeyError:
+            pass
+        # Try to split string on underscore and take first word
+        try:
+            result = process_video(query.split("_")[0])
+            return result
+        except KeyError:
+            pass
+
+        return "NOT_CATEGORISED"
+
+    def process_video(query):
+        query_embed = embeddings_index[query.lower()]
+        scores = {}
+        highest_key = {}
+        for word, embed in data_embeddings.items():
+            category = categories[word]
+            dist = query_embed.dot(embed)
+            dist /= len(category_data[category])
+            scores[category] = scores.get(category, 0) + dist
+            highest_key = max(scores, key=scores.get)
+        return highest_key
+
+    best_category = get_video_category(best_prediction)
+    if mid_prediction != None:
+        mid_category = get_video_category(mid_prediction)
+    if low_prediction != None:
+        low_category = get_video_category(low_prediction)
+
+    category_json = {
+        "Best Prediction Category": best_category
+    }
+    if mid_category:
+        category_json["Mid Prediction Category"] = mid_category
+    if low_category:
+        category_json["Low Prediction Category"] = low_category
+
+    return category_json
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=6060)
