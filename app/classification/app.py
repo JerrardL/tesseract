@@ -19,7 +19,6 @@ def classify():
 
     img = Image.open(io.BytesIO(image_data))
     img = img.resize((224, 244), Image.ANTIALIAS)
-    #img = image.load_img(img_path, target_size=(224, 224))
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
     x = preprocess_input(x)

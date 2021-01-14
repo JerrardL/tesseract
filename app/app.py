@@ -96,12 +96,11 @@ def process_enrichments(data):
                 classification_response = classification.execute(data)
                 formatted_response["extractions"].append({"classification": classification_response})
                 # If the image cannot be classified or encounters and error, do not perform categorisation
-                if "Error" not in classification_response:
+                if "Error" not in classification_response and classification_response:
                     # IMAGE CATEGORISATION    
                         # If a classification was extracted, attempt to categorise the prediction via gloVe
-                    if classification_response:
-                        category_response = categorisation.execute(classification_response)
-                        formatted_response["extractions"].append({"categories": category_response})
+                    category_response = categorisation.execute(classification_response)
+                    formatted_response["extractions"].append({"categories": category_response})
         elif response["ocr_extraction"]:
             # NLP
                 # If text was extracted from the file, attempt to perform nlp via Scapy

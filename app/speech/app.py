@@ -1,9 +1,6 @@
 from os import getenv
-
 from flask import Flask, request, jsonify
-
 from .engine import SpeechToTextEngine
-
 from pydub import AudioSegment
 from io import BytesIO
 

@@ -1,10 +1,8 @@
 from flask import Flask, request
 from imageai.Detection import VideoObjectDetection
 import os
-import cv2
 import operator
 from collections import OrderedDict
-from io import BytesIO
 
 app = Flask(__name__)
 
@@ -17,7 +15,7 @@ def video_or():
 
     total_unique_output = OrderedDict()
 
-    def forFrame(frame_number, output_array, output_count):
+    def for_frame(frame_number, output_array, output_count):
 
         for key, value in output_count.items():
 
@@ -35,7 +33,7 @@ def video_or():
     detector.setModelPath( os.path.join(execution_path , "yolo.h5"))
     detector.loadModel()
     detector.detectObjectsFromVideo(input_file_path="/tmp/video_file",
-                            frames_per_second=20, log_progress=True, display_object_name=True, save_detected_video=False, per_frame_function=forFrame)
+                            frames_per_second=20, log_progress=True, display_object_name=True, save_detected_video=False, per_frame_function=for_frame)
 
     os.remove('/tmp/video_file')
 
