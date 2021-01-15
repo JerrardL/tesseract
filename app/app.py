@@ -57,7 +57,7 @@ def process_enrichments(data):
         # VIDEO CATEGORISATION
             # If objects were detected, attempt to categorise the three most populous objects via gloVe
         if video_or_extraction:
-            category_response = video_categorisation.execute(video_or_extraction['Unique Object Count'])
+            category_response = video_categorisation.execute(video_or_extraction['Object Frequency'])
             formatted_response["extractions"].append({"categories": category_response})
         # SPEECH RECOGNITION for VIDEO
             # Then attempt to convert video file to audio for extraction, via pydub
@@ -80,6 +80,7 @@ def process_enrichments(data):
                 # If text was extracted from the file, attempt to perform nlp via Scapy
             nlp_response = nlp.execute(response["extraction"])
             formatted_response["extractions"].append({"nlp_extraction": nlp_response})
+    # IMAGE FILES
     # If NOT AUDIO OR VIDEO FILE, attempt to perform ocr text extraction via Tika
     else:
         response = ocr.execute(data)

@@ -2,14 +2,15 @@ from flask import Flask, request
 
 import numpy as np
 import io
-from tensorflow.keras.applications.inception_resnet_v2 import InceptionResNetV2
+from tensorflow.keras.applications.vgg16 import VGG16
+
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.inception_resnet_v2 import preprocess_input, decode_predictions
+from tensorflow.keras.applications.vgg16 import preprocess_input, decode_predictions
 from tensorflow.python.framework.errors_impl import InvalidArgumentError
 from PIL import Image
 
 app = Flask(__name__)
-model = InceptionResNetV2(classes=1000, weights='imagenet')
+model = VGG16(include_top=True, classes=1000, weights='imagenet')
 
 # Main Route:
 # Use POST method with binary and file to upload via Postman
