@@ -13,8 +13,6 @@ from enrichments.Video import Video
 from enrichments.VideoOR import VideoOR
 from enrichments.VideoCategorisation import VideoCategorisation
 
-import sys
-
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
 config = None
@@ -110,8 +108,9 @@ def process_enrichments(data):
 
     # Format JSON
     formatted_response_json = json.dumps(formatted_response, indent=4)
+    json_object = json.loads(formatted_response_json)
 
-    return formatted_response_json
+    return json_object
 
 def language_detection(data):
     
