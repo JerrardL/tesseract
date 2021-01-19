@@ -3,3 +3,5 @@
 /app/video_or/videos/*.avi
 /app/video_or/*.h5
 /app/categorisation/*.300d.txt
+/app/captioning/assets
+/app/uploaded

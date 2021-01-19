@@ -1,12 +1,14 @@
 from flask import Flask, request
-
+import os
 import numpy as np
 
 
 app = Flask(__name__)
+execution_path = os.getcwd()
+glove_path = os.path.join(execution_path , "glove.6B.300d.txt")
 
 embeddings_index = {}
-with open('/glove/glove.6B.300d.txt', encoding="utf8") as f:
+with open(glove_path, encoding="utf8") as f:
     for line in f:
         values = line.split()
         word = values[0]

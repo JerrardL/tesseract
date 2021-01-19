@@ -5,10 +5,6 @@ RUN pip install -r /requirements.txt
 
 WORKDIR /glove
 
-RUN wget -nv --show-progress --progress=bar:force:noscroll http://nlp.stanford.edu/data/glove.6B.zip && \
-unzip glove.6B.zip && \
-rm -f glove.6B.zip
-
 COPY . /glove
 
 CMD python app.py
