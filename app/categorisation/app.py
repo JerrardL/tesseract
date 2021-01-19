@@ -5,7 +5,7 @@ import numpy as np
 
 app = Flask(__name__)
 execution_path = os.getcwd()
-glove_path = os.path.join(execution_path , "glove.6B.300d.txt")
+glove_path = os.path.join(execution_path , "/models/categorisation/glove.6B.300d.txt")
 
 embeddings_index = {}
 with open(glove_path, encoding="utf8") as f:

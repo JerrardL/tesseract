@@ -8,7 +8,7 @@ services:
             - "9998:9998"
 
     flask:
-        build: .
+        build: ./app/flask
         container_name: flask
         ports:
             - "5001:5000"
@@ -33,7 +33,7 @@ services:
             - '8001:8001'
         restart: 'unless-stopped'
         volumes:
-            - './model.pbmm:/app/model.pbmm:ro'
+        -   ../models:/models
         depends_on:
             - tika
 
@@ -44,6 +44,8 @@ services:
             - "5500:5000"
         depends_on: 
             - tika
+        volumes:
+        -   ../models:/models
 
     classification:
         build: ./app/classification
@@ -52,6 +54,8 @@ services:
             - "5050:5000"
         depends_on: 
             - tika
+        volumes:
+        -   ../models:/models
 
     categorisation:
         build: ./app/categorisation
@@ -60,6 +64,8 @@ services:
             - "6060:5000"
         depends_on: 
             - classification
+        volumes:
+        -   ../models:/models
 
     language:
         build: ./app/language
@@ -76,3 +82,5 @@ services:
             - "8181:5000"
         depends_on:
             - tika
+        volumes:
+        -   ../models:/models

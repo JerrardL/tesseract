@@ -9,7 +9,7 @@ app = Flask(__name__)
 detector = VideoObjectDetection()
 detector.setModelTypeAsYOLOv3()
 execution_path = os.getcwd()
-detector.setModelPath( os.path.join(execution_path , "yolo.h5"))
+detector.setModelPath( os.path.join(execution_path , "/models/video_or/yolo.h5"))
 detector.loadModel(detection_speed="flash")
 
 

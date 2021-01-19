@@ -30,8 +30,8 @@ API_VERSION = '1.1.0'
 
 # default model
 MODEL_NAME = 'im2txt'
-DEFAULT_MODEL_PATH = 'assets/checkpoint/model2.ckpt-2000000'
-VOCAB_FILE = './assets/word_counts.txt'
+DEFAULT_MODEL_PATH = '/models/captioning/assets/checkpoint/model2.ckpt-2000000'
+VOCAB_FILE = '/models/captioning/assets/word_counts.txt'
 # for image models, may not be required
 MODEL_INPUT_IMG_SIZE = (299, 299)
 MODEL_LICENSE = 'Apache 2.0'

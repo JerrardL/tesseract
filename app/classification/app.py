@@ -3,7 +3,7 @@ from flask import Flask, request
 import numpy as np
 import io
 import os
-os.environ['KERAS_HOME'] = os.path.join(os.getcwd(), 'keras')
+os.environ['KERAS_HOME'] = os.path.join('/models/classification/', 'keras')
 from tensorflow.keras.applications.vgg16 import VGG16
 
 from tensorflow.keras.preprocessing import image
