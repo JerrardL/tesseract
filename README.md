@@ -7,4 +7,6 @@ A file is uploaded via binary, and a json response is returned, containing:
 - Natural Language Processing (NLP) on text extracted files. (via. spaCy)
 - Image Captioning on image files. (via. Tensorflow)
 - Image Classification on image files. (via. Keras and InceptionResNetV2 Model)
-- Image Catergorisation on image files that have gone through image classification. (via. gloVe)
+- Catergorisation on image files that have gone through image classification. (via. gloVe)
+- Video Object Recognition (via. ImageAI)
+- Categorisation on video files that have gone through video object recognition (via. gloVe)
