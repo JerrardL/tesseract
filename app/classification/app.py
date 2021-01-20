@@ -3,17 +3,22 @@ from flask import Flask, request
 import numpy as np
 import io
 import os
-os.environ['KERAS_HOME'] = os.path.join('/models/classification/', 'keras')
+import json
+import traceback
+
 from tensorflow.keras.applications.vgg16 import VGG16
 
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.vgg16 import preprocess_input, decode_predictions
+from tensorflow.keras.applications.vgg16 import preprocess_input
 from tensorflow.python.framework.errors_impl import InvalidArgumentError
 from PIL import Image
+from tensorflow.python.util.tf_export import keras_export
+from tensorflow.python.keras.utils import data_utils
+
+#os.environ['KERAS_HOME'] = os.path.join(os.getcwd(), 'models/classification/keras')
 
 app = Flask(__name__)
-model = VGG16(include_top=True, classes=1000, weights='imagenet')
-
+model = VGG16(include_top=True, classes=1000, weights='/models/classification/keras/models/vgg16_weights_tf_dim_ordering_tf_kernels.h5')
 # Main Route:
 # Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
@@ -31,12 +36,12 @@ def classify():
         preds = model.predict(x)
         # decode the results into a list of tuples (class, description, probability)
         # (one such list for each sample in the batch)
-        prediction = decode_predictions(preds, top=3)[0][0][1]
-        confidence = decode_predictions(preds, top=3)[0][0][2]
-        mid_pred = decode_predictions(preds, top=3)[0][1][1]
-        mid_con = decode_predictions(preds, top=3)[0][1][2]
-        low_pred = decode_predictions(preds, top=3)[0][2][1]
-        low_con = decode_predictions(preds, top=3)[0][2][2]
+        prediction = decode_predictions_override(preds, top=3)[0][0][1]
+        confidence = decode_predictions_override(preds, top=3)[0][0][2]
+        mid_pred = decode_predictions_override(preds, top=3)[0][1][1]
+        mid_con = decode_predictions_override(preds, top=3)[0][1][2]
+        low_pred = decode_predictions_override(preds, top=3)[0][2][1]
+        low_con = decode_predictions_override(preds, top=3)[0][2][2]
         prediction_json = {
             "Best Prediction": {
                 "Prediction": prediction,
@@ -54,9 +59,31 @@ def classify():
         return prediction_json
     
     except:
-        return {"Error": "COULD NOT CLASSIFY IMAGE"}
+        return {"Error": f"COULD NOT CLASSIFY IMAGE: {traceback.format_exc()}"}
 
-
+def decode_predictions_override(preds, top=5):
+  CLASS_INDEX = None
+  if len(preds.shape) != 2 or preds.shape[1] != 1000:
+    raise ValueError('`decode_predictions_override` expects '
+                     'a batch of predictions '
+                     '(i.e. a 2D array of shape (samples, 1000)). '
+                     'Found array with shape: ' + str(preds.shape))
+  if CLASS_INDEX is None:
+    fpath = data_utils.get_file(
+        'imagenet_class_index.json',
+        None,
+        cache_subdir='models',
+        file_hash='c2c37ea517e94d9795004a39431a14cb',
+        cache_dir='/models/classification/keras')
+    with open(fpath) as f:
+      CLASS_INDEX = json.load(f)
+  results = []
+  for pred in preds:
+    top_indices = pred.argsort()[-top:][::-1]
+    result = [tuple(CLASS_INDEX[str(i)]) + (pred[i],) for i in top_indices]
+    result.sort(key=lambda x: x[2], reverse=True)
+    results.append(result)
+  return results
 
 
 if __name__ == '__main__':
