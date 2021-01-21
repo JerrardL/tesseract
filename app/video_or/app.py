@@ -9,12 +9,9 @@ app = Flask(__name__)
 detector = VideoObjectDetection()
 detector.setModelTypeAsYOLOv3()
 execution_path = os.getcwd()
-detector.setModelPath( os.path.join(execution_path , "/models/video_or/yolo.h5"))
+detector.setModelPath(os.path.join(execution_path, "/models/video_or/yolo.h5"))
 detector.loadModel(detection_speed="flash")
 
-
-# Main Route:
-# Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
 def video_or():
     video_file = request.get_data()
@@ -35,11 +32,12 @@ def video_or():
     video_path.close()
 
     detector.detectObjectsFromVideo(input_file_path="/tmp/video_file",
-                            frames_per_second=20, log_progress=True, display_object_name=True, save_detected_video=False, per_frame_function=for_frame, thread_safe=True)
+                                    frames_per_second=20, log_progress=True, display_object_name=True, save_detected_video=False, per_frame_function=for_frame, thread_safe=True)
 
     os.remove('/tmp/video_file')
 
-    sorted_frequency_output = sorted(total_frequency_output.items(), key=operator.itemgetter(1), reverse=True)
+    sorted_frequency_output = sorted(
+        total_frequency_output.items(), key=operator.itemgetter(1), reverse=True)
 
     video_or_json = {
         "Object Frequency": sorted_frequency_output

@@ -2,10 +2,10 @@ from flask import Flask, request
 import os
 import numpy as np
 
-
 app = Flask(__name__)
 execution_path = os.getcwd()
-glove_path = os.path.join(execution_path , "/models/categorisation/glove.6B.300d.txt")
+glove_path = os.path.join(
+    execution_path, "/models/categorisation/glove.6B.300d.txt")
 
 embeddings_index = {}
 with open(glove_path, encoding="utf8") as f:
@@ -17,7 +17,6 @@ with open(glove_path, encoding="utf8") as f:
 print('Loaded %s word vectors.' % len(embeddings_index))
 
 # Main Route:
-# Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
 def categorise():
     classification_json = request.get_json()
@@ -26,11 +25,13 @@ def categorise():
     mid_prediciton = classification_json["predictions"]["Mid Prediction"]["Prediction"]
     low_prediction = classification_json["predictions"]["Low Prediction"]["Prediction"]
 
-    categories = {word: key for key, words in category_data.items() for word in words}
+    categories = {word: key for key, words in category_data.items()
+                  for word in words}
     # Embeddings for available words
-    data_embeddings = {key: value for key, value in embeddings_index.items() if key in categories.keys()}
+    data_embeddings = {key: value for key,
+                       value in embeddings_index.items() if key in categories.keys()}
 
-    def get_category(query): 
+    def get_category(query):
         result = None
         # Try to process the query without modification
         try:
@@ -83,6 +84,7 @@ def categorise():
 
     return category_json
 
+#Video Route
 @app.route('/video', methods=['POST'])
 def categorise_video():
     video_objects_json = request.get_json()
@@ -97,11 +99,13 @@ def categorise_video():
     else:
         low_prediction = None
 
-    categories = {word: key for key, words in category_data.items() for word in words}
+    categories = {word: key for key, words in category_data.items()
+                  for word in words}
     # Embeddings for available words
-    data_embeddings = {key: value for key, value in embeddings_index.items() if key in categories.keys()}
+    data_embeddings = {key: value for key,
+                       value in embeddings_index.items() if key in categories.keys()}
 
-    def get_video_category(query): 
+    def get_video_category(query):
         result = None
         # Try to process the query without modification
         try:
@@ -157,7 +161,6 @@ def categorise_video():
         category_json["Low Prediction Category"] = low_category
 
     return category_json
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=6060)

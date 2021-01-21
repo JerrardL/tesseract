@@ -4,7 +4,6 @@ from .engine import SpeechToTextEngine
 from pydub import AudioSegment
 from io import BytesIO
 
-
 MAX_ENGINE_WORKERS = int(getenv('MAX_ENGINE_WORKERS', 2))
 
 engine = SpeechToTextEngine()
@@ -30,7 +29,6 @@ def convert_video():
     audio = video_to_audio.read()
     text = engine.run(audio)
     return jsonify({"text": text})
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8001)

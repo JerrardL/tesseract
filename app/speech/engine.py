@@ -1,12 +1,9 @@
 import wave
 from io import BytesIO
-from pathlib import Path
 
 import ffmpeg
 import numpy as np
 from deepspeech import Model
-
-
 class SpeechToTextEngine:
     def __init__(self):
         self.model = Model(model_path='/models/speech/model.pbmm')
@@ -26,5 +23,3 @@ class SpeechToTextEngine:
             audio = np.frombuffer(wav.readframes(wav.getnframes()), np.int16)
         result = self.model.stt(audio_buffer=audio)
         return result
-
-    

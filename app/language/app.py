@@ -1,11 +1,8 @@
 from flask import Flask, request, jsonify
 from langdetect import detect
 
-
 app = Flask(__name__)
 
-# Main Route:
-# Use POST method with binary and file to upload via Postman
 @app.route('/', methods=['POST'])
 def langauge():
     extraction = request.get_json()

@@ -2,25 +2,18 @@ from flask import Flask, request
 
 import numpy as np
 import io
-import os
 import json
 import traceback
 
-from tensorflow.keras.applications.vgg16 import VGG16
-
+from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.vgg16 import preprocess_input
-from tensorflow.python.framework.errors_impl import InvalidArgumentError
-from PIL import Image
-from tensorflow.python.util.tf_export import keras_export
 from tensorflow.python.keras.utils import data_utils
-
-#os.environ['KERAS_HOME'] = os.path.join(os.getcwd(), 'models/classification/keras')
+from PIL import Image
 
 app = Flask(__name__)
-model = VGG16(include_top=True, classes=1000, weights='/models/classification/keras/models/vgg16_weights_tf_dim_ordering_tf_kernels.h5')
-# Main Route:
-# Use POST method with binary and file to upload via Postman
+model = VGG16(include_top=True, classes=1000,
+              weights='/models/classification/keras/models/vgg16_weights_tf_dim_ordering_tf_kernels.h5')
+
 @app.route('/', methods=['POST'])
 def classify():
     image_data = request.get_data()
@@ -57,9 +50,10 @@ def classify():
             }
         }
         return prediction_json
-    
+
     except:
         return {"Error": f"COULD NOT CLASSIFY IMAGE: {traceback.format_exc()}"}
+
 
 def decode_predictions_override(preds, top=5):
   CLASS_INDEX = None
