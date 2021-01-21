@@ -47,9 +47,9 @@ services:
         volumes:
         -   ../models:/models
 
-    classification:
-        build: ./app/classification
-        container_name: classification
+    keras_classification:
+        build: ./app/keras_classification
+        container_name: keras_classification
         ports:
             - "5050:5000"
         depends_on: 
@@ -63,7 +63,8 @@ services:
         ports:
             - "6060:5000"
         depends_on: 
-            - classification
+            - keras_classification
+            - imageai_classification
         volumes:
         -   ../models:/models
 
@@ -80,6 +81,16 @@ services:
         container_name: video_object_recognition
         ports:
             - "8181:5000"
+        depends_on:
+            - tika
+        volumes:
+        -   ../models:/models
+
+    imageai_classification:
+        build: ./app/imageai_classification
+        container_name: imageai_classification
+        ports:
+            - "7711:5000"
         depends_on:
             - tika
         volumes:

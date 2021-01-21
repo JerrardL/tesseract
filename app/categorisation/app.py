@@ -17,7 +17,7 @@ with open(glove_path, encoding="utf8") as f:
 print('Loaded %s word vectors.' % len(embeddings_index))
 
 # Main Route:
-@app.route('/', methods=['POST'])
+@app.route('/keras', methods=['POST'])
 def categorise():
     classification_json = request.get_json()
     category_data = classification_json["category_data"]
@@ -84,18 +84,23 @@ def categorise():
 
     return category_json
 
-#Video Route
-@app.route('/video', methods=['POST'])
-def categorise_video():
-    video_objects_json = request.get_json()
-    category_data = video_objects_json["category_data"]
-    best_prediction = video_objects_json["predictions"]["Best Prediction"]
-    if video_objects_json["predictions"]["Mid Prediction"]:
-        mid_prediction = video_objects_json["predictions"]["Mid Prediction"]
+#ImageAI Route
+@app.route('/imageai', methods=['POST'])
+def categorise_imageai():
+    imageai_objects_json = request.get_json()
+    category_data = imageai_objects_json["category_data"]
+    if imageai_objects_json["predictions"] == None:
+        return {"Error": "COULD NOT FIND SUITABLE CLASSIFICIATION VIA IMAGEAI"}
+    else:
+        length = len(imageai_objects_json["predictions"])
+        best_prediction = imageai_objects_json["predictions"]["Best Prediction"]
+    
+    if length > 1:
+        mid_prediction = imageai_objects_json["predictions"]["Mid Prediction"]
     else:
         mid_prediction = None
-    if video_objects_json["predictions"]["Low Prediction"]:
-        low_prediction = video_objects_json["predictions"]["Low Prediction"]
+    if length > 2:
+        low_prediction = imageai_objects_json["predictions"]["Low Prediction"]
     else:
         low_prediction = None
 
@@ -105,36 +110,36 @@ def categorise_video():
     data_embeddings = {key: value for key,
                        value in embeddings_index.items() if key in categories.keys()}
 
-    def get_video_category(query):
+    def get_imageai_category(query):
         result = None
         # Try to process the query without modification
         try:
-            result = process_video(query)
+            result = process_imageai(query)
             return result
         except KeyError:
             pass
         # Try to join the word
         try:
-            result = process_video(query.replace("_", ""))
+            result = process_imageai(query.replace("_", ""))
             return result
         except KeyError:
             pass
         # Try to split string on underscore and take last word
         try:
-            result = process_video(query.split("_")[-1])
+            result = process_imageai(query.split("_")[-1])
             return result
         except KeyError:
             pass
         # Try to split string on underscore and take first word
         try:
-            result = process_video(query.split("_")[0])
+            result = process_imageai(query.split("_")[0])
             return result
         except KeyError:
             pass
 
         return "NOT_CATEGORISED"
 
-    def process_video(query):
+    def process_imageai(query):
         query_embed = embeddings_index[query.lower()]
         scores = {}
         highest_key = {}
@@ -146,18 +151,22 @@ def categorise_video():
             highest_key = max(scores, key=scores.get)
         return highest_key
 
-    best_category = get_video_category(best_prediction)
+    best_category = get_imageai_category(best_prediction)
     if mid_prediction != None:
-        mid_category = get_video_category(mid_prediction)
+        mid_category = get_imageai_category(mid_prediction)
+    else:
+        mid_category = None
     if low_prediction != None:
-        low_category = get_video_category(low_prediction)
+        low_category = get_imageai_category(low_prediction)
+    else:
+        low_category = None
 
     category_json = {
         "Best Prediction Category": best_category
     }
-    if mid_category:
+    if mid_category != None:
         category_json["Mid Prediction Category"] = mid_category
-    if low_category:
+    if low_category != None:
         category_json["Low Prediction Category"] = low_category
 
     return category_json

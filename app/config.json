@@ -55,8 +55,8 @@
       ],
       "probability_threshold" : 0.0005
     },
-    "Classification": {
-      "endpoint": "http://classification:5050",
+    "KerasClassification": {
+      "endpoint": "http://keras_classification:5050",
       "headers": {},
       "supported_types": [
         "image/png",
@@ -65,8 +65,8 @@
         "image/gif"
       ]
     },
-    "Categorisation": {
-      "endpoint": "http://categorisation:6060",
+    "KerasCategorisation": {
+      "endpoint": "http://categorisation:6060/keras",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -128,8 +128,8 @@
         "video/mp4"
       ]
     },
-    "VideoCategorisation": {
-      "endpoint": "http://categorisation:6060/video",
+    "ImageAICategorisation": {
+      "endpoint": "http://categorisation:6060/imageai",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -141,12 +141,22 @@
       "category_data": {
         "Violent": ["rifle", "handgun", "firearm", "blade", "knife", "blood"],
         "Location": ["beach", "park", "forest", "river", "garden", "mountain"],
-        "Dogs": ["poodle", "labrador", "great dane", "chihuahua", "pug", "bulldog"],
+        "Dogs": ["poodle", "labrador", "great dane", "chihuahua", "pug", "bulldog", "dog"],
         "Vehicle": ["car", "van", "truck", "hatchback", "bus", "lorry"],
-        "People": ["man", "woman", "child", "baby", "girl", "boy"],
+        "People": ["man", "woman", "child", "baby", "girl", "boy", "person"],
         "Clothing": ["jacket", "shorts", "skirt", "trousers", "hat", "shirt"],
         "Activities": ["swimming", "running", "walking", "cycling", "jogging", "golfing"]
       }
+    },
+    "ImageAIClassification": {
+      "endpoint": "http://imageai_classification:7711",
+      "headers": {},
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif"
+      ]
     }
   }
 }
