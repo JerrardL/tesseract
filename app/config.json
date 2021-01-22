@@ -86,7 +86,8 @@
         "Vehicle": ["car", "van", "truck", "hatchback", "bus", "lorry"],
         "People": ["man", "woman", "child", "baby", "girl", "boy"],
         "Clothing": ["jacket", "shorts", "skirt", "trousers", "hat", "shirt"],
-        "Activities": ["swimming", "running", "walking", "cycling", "jogging", "golfing"]
+        "Activities": ["swimming", "running", "walking", "cycling", "jogging", "golfing"],
+        "Animals": ["giraffe", "zebra", "lion", "monkey", "bird", "cat"]
       }
     },
     "Language": {
@@ -145,7 +146,8 @@
         "Vehicle": ["car", "van", "truck", "hatchback", "bus", "lorry"],
         "People": ["man", "woman", "child", "baby", "girl", "boy", "person"],
         "Clothing": ["jacket", "shorts", "skirt", "trousers", "hat", "shirt"],
-        "Activities": ["swimming", "running", "walking", "cycling", "jogging", "golfing"]
+        "Activities": ["swimming", "running", "walking", "cycling", "jogging", "golfing"],
+        "Animals": ["giraffe", "zebra", "lion", "monkey", "bird", "cat"]
       }
     },
     "ImageAIClassification": {
