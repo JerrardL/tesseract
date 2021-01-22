@@ -37,6 +37,17 @@ services:
         depends_on:
             - tika
 
+    new_speech:
+        build: ./app/new_speech
+        container_name: new_speech
+        ports:
+            - '8765:8001'
+        restart: 'unless-stopped'
+        volumes:
+        -   ../models/new_speech/pocketsphinx-data:/usr/local/lib/python3.6/site-packages/speech_recognition/pocketsphinx-data
+        depends_on:
+            - tika
+
     captioning:
         build: ./app/captioning
         container_name: caption

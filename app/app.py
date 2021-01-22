@@ -14,6 +14,8 @@ from enrichments.VideoOR import VideoOR
 from enrichments.ImageAICategorisation import ImageAICategorisation
 from enrichments.ImageAIClassification import ImageAIClassification
 
+from enrichments.NewSpeech import NewSpeech
+
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
 config = None
@@ -34,6 +36,8 @@ def process_enrichments(data):
     video = Video(config)
     video_object_recognition = VideoOR(config)
     imageai_categorisation = ImageAICategorisation(config)
+
+    new_speech = NewSpeech(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -77,8 +81,12 @@ def process_enrichments(data):
     #### AUDIO FILES ####
         # SPEECH RECOGNITION
         # If AUDIO FILE, attempt to get speech recognition if audio file via DeepSpeech
-    elif content_type in speech_recognition.supported_types:
-        response = speech_recognition.execute(data)
+    # elif content_type in speech_recognition.supported_types:
+    #     response = speech_recognition.execute(data)
+    #     formatted_response["extractions"].append(
+    #         {"speech_extraction": response})
+    elif content_type in new_speech.supported_types:
+        response = new_speech.execute(data)
         formatted_response["extractions"].append(
             {"speech_extraction": response})
         if response["extraction"]:

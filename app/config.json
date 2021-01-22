@@ -33,6 +33,20 @@
         "video/mp4"
       ]
     },
+    "NewSpeech": {
+      "endpoint": "http://new_speech:8765",
+      "headers": {},
+      "supported_types": [
+        "audio/aac",
+        "audio/vnd.wave",
+        "audio/mpeg",
+        "audio/wav",
+        "audi/webm",
+        "video/mpeg",
+        "video/wemb",
+        "video/mp4"
+      ]
+    },
     "NLP": {
       "endpoint": "http://nlp:8000/ent",
       "headers": {

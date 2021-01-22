@@ -1,0 +1,5 @@
+Flask==1.1.2
+speechrecognition ~= 3.8.1
+pocketsphinx ~= 0.1.15
+setuptools ~= 51.3.3
+wheel ~= 0.36.2
