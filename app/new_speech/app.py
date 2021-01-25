@@ -12,11 +12,6 @@ r = sr.Recognizer()
 def stt():
     speech = request.get_data()
 
-    # If AudioFile needs a path:
-    # speech_path = open('/tmp/speech_file', 'wb')
-    # speech_path.write(speech)
-    # speech_path.close()
-
     with sr.AudioFile(BytesIO(speech)) as source:
         audio = r.record(source)
 
@@ -32,3 +27,12 @@ def stt():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8765)
+
+
+# new-speech - intended to replace Speech enrichment.
+# Works well and seemingly faster than DeepSpeech.
+# Uses CMU Sphinx which includes models for other languages.
+# Issue is than language must be specified first before CMU Sphinx
+# uses that model to transcribe the audio.
+# Is there any way to detect a langauge from audio, and then pass
+# this result as the language input for CMU Sphinx? (lang_detect enrichment)
