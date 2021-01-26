@@ -12,7 +12,7 @@ A file is uploaded via binary, and a json response is returned, containing:
 - Categorisation on video files that have gone through video object recognition (via. gloVe)
 - Semantic Analysis on text extracted from images, audio or video (via. NLTK)
 
-Datasets Used include:
+## Datasets Used include:
 - YOLO v3 with ImageAI
 - VADER with NLTK
 - PocketSphinx & SourceForge with CMU Sphinx
