@@ -173,6 +173,27 @@
         "image/jpeg",
         "image/gif"
       ]
+    },
+    "TextSentimentAnalysis": {
+      "endpoint": "http://text_sentiment_analysis:5553",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif",
+        "application/pdf",
+        "audio/aac",
+        "audio/vnd.wave",
+        "audio/mpeg",
+        "audio/wav",
+        "audi/webm",
+        "video/mpeg",
+        "video/wemb",
+        "video/mp4"
+      ]
     }
   }
 }

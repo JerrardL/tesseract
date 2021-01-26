@@ -15,6 +15,7 @@ from enrichments.ImageAICategorisation import ImageAICategorisation
 from enrichments.ImageAIClassification import ImageAIClassification
 
 from enrichments.NewSpeech import NewSpeech
+from enrichments.TextSentimentAnalysis import TextSentimentAnalysis
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -26,7 +27,10 @@ def process_enrichments(data):
 
     # Init classes
     meta = Meta(config)
+
+    #Not In Use While NewSpeech is being used
     speech_recognition = Speech(config)
+
     ocr = OCR(config)
     nlp = NLP(config)
     captioning = Captioning(config)
@@ -38,6 +42,7 @@ def process_enrichments(data):
     imageai_categorisation = ImageAICategorisation(config)
 
     new_speech = NewSpeech(config)
+    text_sentiment_analysis = TextSentimentAnalysis(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -73,8 +78,12 @@ def process_enrichments(data):
         formatted_response["extractions"].append(
             {"video_extraction": video_extraction})
         if video_extraction["extraction"]:
+            # TEXT SENTIMENT ANALYSIS
+            # If text was extracted from the file, first attempt to perform sentiment analysis via nltk
+            text_sentiment_response = text_sentiment_analysis.execute(video_extraction["extraction"])
+            formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
             # NLP
-            # If text was extracted from the file, attempt to perform nlp via Scapy
+            # Then, attempt to perform nlp via Scapy
             nlp_response = nlp.execute(video_extraction["extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
@@ -90,8 +99,12 @@ def process_enrichments(data):
         formatted_response["extractions"].append(
             {"speech_extraction": response})
         if response["extraction"]:
+            # TEXT SENTIMENT ANALYSIS
+            # If text was extracted from the file, first attempt to perform sentiment analysis via nltk
+            text_sentiment_response = text_sentiment_analysis.execute(response["extraction"])
+            formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
             # NLP
-            # If text was extracted from the file, attempt to perform nlp via Scapy
+            # Then, attempt to perform nlp via Scapy
             nlp_response = nlp.execute(response["extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
@@ -135,8 +148,12 @@ def process_enrichments(data):
                         formatted_response["extractions"].append(
                             {"Keras categories": category_response})
         elif response["ocr_extraction"]:
+            # TEXT SENTIMENT ANALYSIS
+            # If text was extracted from the file, first attempt to perform sentiment analysis via nltk
+            text_sentiment_response = text_sentiment_analysis.execute(response["ocr_extraction"])
+            formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
             # NLP
-            # If text was extracted from the file, attempt to perform nlp via Scapy
+            # Then, attempt to perform nlp via Scapy
             nlp_response = nlp.execute(response["ocr_extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})

@@ -17,7 +17,7 @@ def stt():
 
     # recognize speech using Sphinx
     try:
-        text = r.recognize_sphinx(audio, language="fr-FR")
+        text = r.recognize_sphinx(audio)
     except sr.UnknownValueError:
         text = "Sphinx could not understand audio"
     except sr.RequestError as e:
