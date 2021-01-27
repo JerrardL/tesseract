@@ -30,8 +30,7 @@ models/categorisation/...
 models/object_recognition/...
 ```
 ### Installation
-The set up is very simple. Once you have downloaded the models and created the subdirectory for them and installed Docker, to run the application enter the following command into your terminal from the root folder location (/tesseract):
-`docker-compose up --build`
+The set up is very simple. Once you have downloaded the models and created the subdirectory for them and installed Docker, to run the application enter `docker-compose up --build` into your terminal from the root folder location (/tesseract).
 Most enrichments have been created from a python script that uses Flask to make requests, with the exception of the Metadata, OCR and NLP enrichments which use the following docker images, made available from Docker Hub:
 #### Docker Images used include:
 - Apache Tika
