@@ -14,13 +14,25 @@ A file is uploaded via binary, and a json response is returned, containing:
 
 The application is written mainly in python, but runs using various containers within Docker, composed from a single Docker Compose file. Each enrichment is either made from an initial python script that uses Flask as a web framework for sending requests, or from a pre created Docker image from Docker Hub. During testing, requests are made via Postman.
 
-### Docker Images used include:
-- Apache Tika
-- spaCy API
-### Datasets/Models used include:
+### Prerequisites
+You will need both Docker and the used models/datasets as a prerequisite to run the application. The models have not been uploaded due to their size but they can be be found and downloaded from these sites:
+#### Datasets/Models used include:
 - YOLO v3 with ImageAI
 - VADER with NLTK
 - PocketSphinx & SourceForge with CMU Sphinx
 - IBM Cloud Object Storage & MIT with Tensorflow
 - gloVe
 - Model for DeepSpeech
+Pull the initial tesseract repo to your local computer. Create a new subdirectory, outside of tesseract, named models. Place your saved models in this new directory, with each model in its own subdirectory, name respective to the enrichment it is being used for E.g.:
+```
+models/captioning/...
+models/categorisation/...
+models/object_recognition/...
+```
+### Installation
+The set up is very simple. Once you have downloaded the models and created the subdirectory for them and installed Docker, to run the application enter the following command into your terminal from the root folder location (/tesseract):
+`docker-compose up --build`
+Most enrichments have been created from a python script that uses Flask to make requests, with the exception of the Metadata, OCR and NLP enrichments which use the following docker images, made available from Docker Hub:
+#### Docker Images used include:
+- Apache Tika
+- spaCy API
