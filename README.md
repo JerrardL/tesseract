@@ -23,6 +23,7 @@ You will need both Docker and the used models/datasets as a prerequisite to run 
 - IBM Cloud Object Storage & MIT with Tensorflow
 - gloVe
 - Model for DeepSpeech
+
 Pull the initial tesseract repo to your local computer. Create a new subdirectory, outside of tesseract, named models. Place your saved models in this new directory, with each model in its own subdirectory, name respective to the enrichment it is being used for E.g.:
 ```
 models/captioning/...
