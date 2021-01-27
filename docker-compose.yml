@@ -114,3 +114,5 @@ services:
             - "5553:5000"
         depends_on:
             - tika
+        volumes:
+        -   ../models:/models

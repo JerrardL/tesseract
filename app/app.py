@@ -90,6 +90,7 @@ def process_enrichments(data):
     #### AUDIO FILES ####
         # SPEECH RECOGNITION
         # If AUDIO FILE, attempt to get speech recognition if audio file via DeepSpeech
+    # old speech
     # elif content_type in speech_recognition.supported_types:
     #     response = speech_recognition.execute(data)
     #     formatted_response["extractions"].append(

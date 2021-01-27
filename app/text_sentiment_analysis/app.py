@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify
 
-import nltk
-nltk.download('vader_lexicon')
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from analyser import SentimentIntensityAnalyzer
 
 app = Flask(__name__)
 sid = SentimentIntensityAnalyzer()
@@ -14,11 +12,13 @@ def text_sentiment():
     pos =sid.polarity_scores(text_extraction)['pos']
     neg =sid.polarity_scores(text_extraction)['neg'] 
     neu =sid.polarity_scores(text_extraction)['neu']
+    com =sid.polarity_scores(text_extraction)['compound']
 
     sentiment = {
         "positive": pos,
         "negative": neg,
-        "neutral": neu
+        "neutral": neu,
+        "compound": com
     }
     return jsonify({"text": sentiment})
 
