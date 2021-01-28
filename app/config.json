@@ -96,9 +96,9 @@
       "category_data": {
         "Violent": ["rifle", "handgun", "firearm", "blade", "knife", "blood"],
         "Location": ["beach", "park", "forest", "river", "garden", "mountain"],
-        "Dogs": ["poodle", "labrador", "great dane", "chihuahua", "pug", "bulldog"],
+        "Dogs": ["poodle", "labrador", "great dane", "chihuahua", "pug", "bulldog", "dog"],
         "Vehicle": ["car", "van", "truck", "hatchback", "bus", "lorry"],
-        "People": ["man", "woman", "child", "baby", "girl", "boy"],
+        "People": ["man", "woman", "child", "baby", "girl", "boy", "person"],
         "Clothing": ["jacket", "shorts", "skirt", "trousers", "hat", "shirt"],
         "Activities": ["swimming", "running", "walking", "cycling", "jogging", "golfing"],
         "Animals": ["giraffe", "zebra", "lion", "monkey", "bird", "cat"]
@@ -190,6 +190,44 @@
         "audio/mpeg",
         "audio/wav",
         "audi/webm",
+        "video/mpeg",
+        "video/wemb",
+        "video/mp4"
+      ]
+    },
+    "NSFWImageClassifier": {
+      "endpoint": "http://nsfw_classifier:9990/image",
+      "headers": {},
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif"
+      ]
+    },
+    "NSFWVideoClassifier": {
+      "endpoint": "http://nsfw_classifier:9990/video",
+      "headers": {},
+      "supported_types": [
+        "video/mpeg",
+        "video/wemb",
+        "video/mp4"
+      ]
+    },
+    "NSFWImageDetector": {
+      "endpoint": "http://nsfw_detector:9991/image",
+      "headers": {},
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif"
+      ]
+    },
+    "NSFWVideoDetector": {
+      "endpoint": "http://nsfw_detector:9991/video",
+      "headers": {},
+      "supported_types": [
         "video/mpeg",
         "video/wemb",
         "video/mp4"

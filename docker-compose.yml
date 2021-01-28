@@ -116,3 +116,21 @@ services:
             - tika
         volumes:
         -   ../models:/models
+
+    nsfw_classifier:
+        build: ./app/nsfw_classifier
+        container_name: nsfw_classifier
+        ports:
+            - "9990:5000"
+        volumes:
+        -   ../models:/models
+
+    nsfw_detector:
+        build: ./app/nsfw_detector
+        container_name: nsfw_detector
+        ports:
+            - "9991:5000"
+        depends_on:
+            - nsfw_classifier
+        volumes:
+        -   ../models:/models

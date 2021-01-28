@@ -16,6 +16,10 @@ from enrichments.ImageAIClassification import ImageAIClassification
 
 from enrichments.NewSpeech import NewSpeech
 from enrichments.TextSentimentAnalysis import TextSentimentAnalysis
+from enrichments.NSFWImageClassifier import NSFWImageClassifier
+from enrichments.NSFWImageDetector import NSFWImageDetector
+from enrichments.NSFWVideoClassifier import NSFWVideoClassifier
+from enrichments.NSFWVideoDetector import NSFWVideoDetector
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -43,6 +47,10 @@ def process_enrichments(data):
 
     new_speech = NewSpeech(config)
     text_sentiment_analysis = TextSentimentAnalysis(config)
+    nsfw_image_classifier = NSFWImageClassifier(config)
+    nsfw_image_detector = NSFWImageDetector(config)
+    nsfw_video_classifier = NSFWVideoClassifier(config)
+    nsfw_video_detector = NSFWVideoDetector(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -58,6 +66,12 @@ def process_enrichments(data):
     content_type = meta_response["Content-Type"]
 
     #### VIDEO FILES ####
+    # NSFW CLASSIFIER
+    # Attempt to classify if the video is deemed safe or unsafe (explicit) via NudeNet
+    if content_type in nsfw_video_classifier.supported_types:
+        nsfw_classifier_response = nsfw_video_classifier.execute(data)
+        formatted_response["extractions"].append(
+            {"nsfw_classification": nsfw_classifier_response})
     # VIDEO OBJECT RECOGNITION
     # If VIDEO FILE, first attempt to perform object recogntion via imageAI
     if content_type in video.supported_types:
@@ -116,6 +130,12 @@ def process_enrichments(data):
         formatted_response["extractions"].append(response)
         # If OCR response was blank or whitespace do not perform NLP
         if response["ocr_extraction"] == ocr_errmsg:
+            # NSFW CLASSIFIER
+            # If the file was an image, attempt to classify if the image is deemed safe or unsafe (explicit) via NudeNet
+            if content_type in nsfw_image_classifier.supported_types:
+                nsfw_classifier_response = nsfw_image_classifier.execute(data)
+                formatted_response["extractions"].append(
+                    {"nsfw_classification": nsfw_classifier_response})
             # IMAGE CAPTIONING
             # If the file was an image, attempt to perform image captioning via Tensorflow
             if content_type in captioning.supported_types:
