@@ -14,7 +14,7 @@ for which they will provide output, along with how to download the required mode
 - [Categorisation](#categorisation)
 - [Text Semantic Analysis](#text-semantic-analysis)
 - [Speech Recognition](#speech-recognition)
-- [TL;DR](#tl;dr-installation)
+- [TL;DR](#tldr-installation)
 
 
 ## Enrichments
