@@ -14,7 +14,7 @@ for which they will provide output, along with how to download the required mode
 - [Categorisation](#categorisation)
 - [Text Semantic Analysis](#text-semantic-analysis)
 - [Speech Recognition](#speech-recognition)
-- [TL;DR](#tldr-installation)
+- [TL;DR (Running The App)](#tldr-running-the-app)
 
 
 ## Enrichments
@@ -119,7 +119,7 @@ This enrichment provides classification on image files that have already gone th
 - **Keras Classification**, where images will be classified using the Keras framework and VGG16 computer vision model, trained with data from [ImageNet](http://www.image-net.org/).
 - **ImageAI Classification**, where images will be classified using the ImageAI framework, which uses a [YoloV3](https://pjreddie.com/darknet/yolo/) model for detection, trained with its own data.
 The reasoning for using two classification models is that the ImageAI classifier has the ability to detect people, whereas the Keras classifier can detect more specific objects, such as a weapon, or clothing. Classification immediately follows [Image Captioning](#image-captioning), and so they have the same supported file types.
-
+#### Classification Models
 You will need to have the training models pre downloaded in order for this enrichment to work:
 1. From your `models/` folder, create a new folder named `classification`.
 2. Within this folder, create another sub folder named `keras`.
@@ -191,7 +191,7 @@ Currently, 8 predefined categories have been made for categorisation as follows:
 "Animals": ["giraffe", "zebra", "lion", "monkey", "bird", "cat"]
 ```
 Words that have been classified, will be checked against the gloVe file for similar words. They will then be compared to these categories. If a word is found to be most similar to the other words in that category, it will be categorised as the corresponding topic. Categorisation can help to define an overall depiction of what material is contained in an image.
-
+#### Categorisation Models
 Categorisation requires a model to be pre downloaded to work:
 1. From your `models/` folder, create a new folder named `categorisation`.
 2. Within this folder, download this [gloVe file](http://nlp.stanford.edu/data/glove.6B.zip). Unzip the file, and move the `glove.6B.300d.txt` file into your `models/categorisation` location. Do not rename the file.
@@ -214,7 +214,9 @@ Once the models have been downloaded and the folder structure has been created, 
 ```
 
 ### Text Semantic Analysis
+This enrichment provides semantic analysis on text that has been extracted from image, video, or audio files.
 
+#### Semantic Analysis Models
 
 ### Speech Recognition
 This enrichment provides speech recognition by transcribing spoken audio detected in both audio and video files into text. This is done from a python script which uses the SpeechRecognition (SR) library. Supported types for Speech Recognition include:
@@ -234,18 +236,22 @@ The SR library contains support for many different speech libraries but this enr
 
 The default model used by the recogniser is EN-US, so ensure you download the *US English* model first (cmusphinx-en-us-8khz-5.2.tar.gz). The tar file will need to be unzipped first, and will include various different files that will need to be renamed and restructured.
 
+#### Speech Recognition Models
+
 
 - Catergorisation on image files that have gone through image classification (via. gloVe)
 - Video Object Recognition (via. ImageAI)
 - Categorisation on video files that have gone through video object recognition (via. gloVe)
 - Semantic Analysis on text extracted from images, audio or video (via. NLTK)
 
-The application is written mainly in python, but runs using various containers within Docker, composed from a single Docker Compose file. Each enrichment is either made from an initial python script that uses Flask as a web framework for sending requests, or from a pre created Docker image from Docker Hub. During testing, requests are made via Postman.
 
-### TL;DR (Installation)
-You will need both Docker and the used models/datasets as a prerequisite to run the application.
-The set up is very simple. Once you have downloaded the models and created the subdirectory for them and installed Docker, to run the application enter `docker-compose up --build` into your terminal from the root folder location (/tesseract).
-Most enrichments have been created from a python script that uses Flask to make requests, with the exception of the Metadata, OCR and NLP enrichments which use the following docker images, made available from Docker Hub:
-#### Docker Images used include:
-- Apache Tika
-- spaCy API
+### TL;DR (Running The App)
+The application is written mainly in python, but runs using various containers within Docker, composed from a single Docker Compose file. Each enrichment is either made from an initial python script that uses Flask as a web framework for sending requests, or from a pre created Docker image from Docker Hub. During testing, requests are made via Postman.
+**You will need both Docker and the enrichment models/datasets pre downloaded as a prerequisite to run the application.**
+1. Ensure you have Docker installed. You can download it [here](https://www.docker.com/products/docker-desktop).
+2. If you did not read through the enrichments, you need to make sure you have downloaded the appropriate models and datasets, and have set up your model structure accordingly. If you did, you can skip this step.
+    - Follow the [model setup](#model-setup) to create your model directory, and download the models for captioning.
+    - Download the other models and datasets for [classification](#classification-models), [categorisation](#categorisation-models), [text sentiment analysis](#sentiment-analysis-models), and [speech-recognition](#speech-recognition-models).
+3. Run `docker-compose build` from your terminal to build the application from the various images and python libraries specified in the Dockerfiles and requirement files. Ensure you are at the root folder location before running the command (/tesseract).
+4. Once the containers have been built, run `docker-compose up` to start the containers. You will see text output for each container as they start up. Give it a minute to fully load the containers. Usually video object recognition is last to start up, and you should see `Running on http://0.0.0.0:8181/ (Press CTRL+C to quit)` when it is ready.
+5. You can now send a binary file via a POST request using postman or any other service to `http://localhost:5001/` where `localhost` is the host number of your machine. The running terminal will show progress output and any potential errors.
