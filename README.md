@@ -1,8 +1,23 @@
 # File Information Extractor
 An application that can provide various different extractions from a file type based on a variety of different enrichments.
 A file is uploaded via binary to an endpoint, and a JSON response is returned. Based on the file type, the JSON response will 
-return different output. Below is a summary of the different enrichments created so far, and the corresponding supported file types
-for which they will provide output.
+return different output. Below will be a summary of the different enrichments created so far, and the corresponding supported file types
+for which they will provide output, along with how to download the required models where necessary. You can read through each enrichment, or jump to the TL;DR section from the contents for quick text on installation and how to download the models.
+## Contents
+- [Meta](#meta)
+- [Optical Character Recognition (OCR)](#optical-character-recogntion-ocr)
+- [Natural Language Processing (NLP)](#natural-language-processing-nlp)
+- [Image Captioning](#image-captioning)
+- [Model Setup](#model-setup)
+- [Image Classification](#image-classification)
+- [Image Categorisation](#image-categorisation)
+- [Video Object Recognition](#video-object-recognition)
+- [Video Categorisation](#video-categorisation)
+- [Text Semantic Analysis](#text-semantic-analysis)
+- [Speech Recognition](#speech-recognition)
+- [TL;DR](#tl;dr)
+
+
 ## Enrichments
 ### Meta
 This enrichment provides metadata for the provided file. A docker image which uses the Apache Tika framework, is used for this. **Metadata can be extracted from any file type.** Current supported file types for this application include:
@@ -152,8 +167,6 @@ The SR library contains support for many different speech libraries but this enr
 The default model used by the recogniser is EN-US, so ensure you download the *US English* model first (cmusphinx-en-us-8khz-5.2.tar.gz). The tar file will need to be unzipped first, and will include various different files that will need to be renamed and restructured.
 
 
-
-- Image Classification on image files. (via. Keras, InceptionResNetV2 Model & ImageAI)
 - Catergorisation on image files that have gone through image classification (via. gloVe)
 - Video Object Recognition (via. ImageAI)
 - Categorisation on video files that have gone through video object recognition (via. gloVe)
