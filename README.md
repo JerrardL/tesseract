@@ -100,6 +100,39 @@ Once the models have been downloaded and the folder structure has been created, 
 ***The remaining enrichments do not use docker images, and are all created from python scripts which use various different libraries and model data to function. All libraries and Python versions required for each enrichment to work are specified in the enrichments corresponding requirements file and Dockerfile, which will install the libraries needed. Certain enrichments, such as Speech Recognition, require the models to be set up in a certain way from within the `models/` directory in order for them to be read correctly. Instructions will also be provided on how to set up these folders. Ensure that you have followed the first step in the [Model Setup](#model-setup) so that you have already got a base model structure before continuing.***
 ### ***
 
+### Image Classification
+This enrichment provides classification on image files that have already gone through image captioning. Classification attempts to detect and name the objects found within an image. This is done from a variety of python script files which use different libraries depending on the framework being used. Images will go through two sets of classification.
+- **Keras Classification**, where images will be classified using the Keras framework and VGG16 computer vision model, trained with data from [ImageNet](http://www.image-net.org/).
+- **ImageAI Classification**, where images will be classified using the ImageAI framework, which uses a [YoloV3](https://pjreddie.com/darknet/yolo/) model for detection, trained with its own data.
+The reasoning for using two classification models is that the ImageAI classifier has the ability to detect people, whereas the Keras classifier can detect more specific objects, such as a weapon, or clothing. Classification immediately follows [Image Captioning](#image-captioning), and so they have the same supported file types.
+
+You will need to have the training models pre downloaded in order for this enrichment to work:
+1. From your `models/` folder, create a new folder named `classification`.
+2. Within this folder, create another sub folder named `keras`.
+3. Within this folder, create a final sub folder named `models`. You'll need to place the keras classification models here; the [ImageNet JSON](https://storage.googleapis.com/download.tensorflow.org/data/imagenet_class_index.json), and the [VGG16 Weights](https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_tf_dim_ordering_tf_kernels.h5). **DO NOT rename these files.**
+4. Your folder structure here should be `models/classification/keras/models` which should include the two files from the previous step.
+5. From your `models/` folder, create a new folder named `object_detection`. The ImageAI classification model will go here, as it can also be used for detect objects in video files [also](#video-object-recognition).
+6. Download the [YoloV3](https://github.com/OlafenwaMoses/ImageAI/releases/download/1.0/yolo.h5) model file. Leave the file name unchanged.
+
+Once the models have been downloaded and the folder structure has been created, the enrichment will work, allowing access offline also. Similar to Image Captioning, **Image Classification will only work on image files that do not contain text**. As it follows on from image captioning, it has the same idea that only images with objects in them can be classified. Below is an extract example of the Image Classification output:
+```
+"ImageAI classification": {
+    "Object Found, Percentage Probability": [
+        [
+            "person",
+            99
+...
+{
+    "Keras classification": {
+        "Best Prediction": {
+            "Confidence": "0.18676902",
+            "Prediction": "maillot"
+        },
+...
+```
+ImageAI classification includes the object found, along with the percentage probability for that object. Keras classification includes 3 different predictions, based on confidence levels.
+
+
 ### Speech Recognition
 This enrichment provides speech recognition by transcribing spoken audio detected in both audio and video files into text. This is done from a python script which uses the SpeechRecognition (SR) library. Supported types for Speech Recognition include:
 ```
@@ -120,7 +153,6 @@ The default model used by the recogniser is EN-US, so ensure you download the *U
 
 
 
-- Image Captioning on image files (via. Tensorflow)
 - Image Classification on image files. (via. Keras, InceptionResNetV2 Model & ImageAI)
 - Catergorisation on image files that have gone through image classification (via. gloVe)
 - Video Object Recognition (via. ImageAI)
