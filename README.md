@@ -15,6 +15,7 @@ for which they will provide output, along with how to download the required mode
 - [Speech Recognition](#speech-recognition)
 - [Text Sentiment Analysis](#text-sentiment-analysis)
 - [TL;DR (Running The App)](#tldr-running-the-app)
+- [In Production](#in-production)
 
 ## Enrichments
 ### Meta
@@ -286,3 +287,10 @@ The application is written mainly in python, but runs using various containers w
 3. Run `docker-compose build` from your terminal to build the application. Ensure you are at the root folder location that contains the `docker-compose.yml` file before running the command (/tesseract).
 4. Once the containers have been built, run `docker-compose up` to start the containers. You will see text output for each container as they start up. Give it a minute to fully load the containers. Usually video object recognition is last to start up, and you should see `Running on http://0.0.0.0:8181/ (Press CTRL+C to quit)` when it is ready.
 5. You can now send a binary file via a POST request using postman or any other service to `http://localhost:5001/` where `localhost` is the host number of your machine. The running terminal will show progress output and any potential errors.
+
+### In Production
+The following is currently in production and has not yet been added to this offine application version. Once they have been configured and tested the README will be updated to reflect this:
+- New NSFW enrichment that can detect if material is safe or explicit.
+- New speech enrichment to detect what language is being spoken directly from audio.
+- Restructuring of speech recognition models.
+- New enrichment to translate text into different languages.
