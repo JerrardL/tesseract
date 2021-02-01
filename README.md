@@ -12,10 +12,9 @@ for which they will provide output, along with how to download the required mode
 - [Image Classification](#image-classification)
 - [Video Object Recognition](#video-object-recognition)
 - [Categorisation](#categorisation)
-- [Text Semantic Analysis](#text-semantic-analysis)
 - [Speech Recognition](#speech-recognition)
+- [Text Sentiment Analysis](#text-sentiment-analysis)
 - [TL;DR (Running The App)](#tldr-running-the-app)
-
 
 ## Enrichments
 ### Meta
@@ -213,11 +212,6 @@ Once the models have been downloaded and the folder structure has been created, 
 ...
 ```
 
-### Text Semantic Analysis
-This enrichment provides semantic analysis on text that has been extracted from image, video, or audio files.
-
-#### Semantic Analysis Models
-
 ### Speech Recognition
 This enrichment provides speech recognition by transcribing spoken audio detected in both audio and video files into text. This is done from a python script which uses the SpeechRecognition (SR) library. Supported types for Speech Recognition include:
 ```
@@ -238,12 +232,49 @@ The default model used by the recogniser is EN-US, so ensure you download the *U
 
 #### Speech Recognition Models
 
+### Text Sentiment Analysis
+This enrichment provides sentiment analysis on text that has been extracted from image, video, or audio files. This uses the VADER library, within the [NLTK](https://www.nltk.org/) library to provide sentiment analysis on any text that has been extracted. The sentiment result will show how strong it things the text can be perceived as positive, negative or neutral. There is also a compound response which uses a different measurement. It is a summation of valence scores of each word in the lexicon, normalised to values between -1 being most extreme negative, and 1 being most extreme positive. The idea is that you can have have an overall positive sentiment, which may contain stronger classed negative words, but not enough to change the overall text sentiment. Supported types for text sentiment analysis include:
+```
+image/png,
+image/jpg,
+image/jpeg,
+image/gif,
+application/pdf,
+audio/aac,
+audio/vnd.wave,
+audio/mpeg,
+audio/wav,
+audi/webm,
+video/mpeg,
+video/wemb,
+video/mp4
+```
 
-- Catergorisation on image files that have gone through image classification (via. gloVe)
-- Video Object Recognition (via. ImageAI)
-- Categorisation on video files that have gone through video object recognition (via. gloVe)
-- Semantic Analysis on text extracted from images, audio or video (via. NLTK)
+#### Sentiment Analysis Models
+Text Sentiment Analysis requires a model to be pre downloaded to work:
+1. From your `models/` folder, create a new folder named `sentiment`.
+2. Start an interactive python shell, using your command line, terminal or any other method.
+3. Run the following:
+```
+import nltk
+nltk.download('vader_lexicon')
+```
+4. Once this has been downloaded. Navigative to to your `C:\Users\AppData` location, dependant on your environment. If AppData is not showing from users you may have to check that hidden files are being shown.
+5. From here navigate to `\Roaming\nltk_data\sentiment\vader_lexicon\vader_lexicon
+6. Here you will see the `vader_lexicon.txt` file - copy this file to your `models/sentiment` location.
 
+
+Once the models have been downloaded and the folder structure has been created, the enrichment will work, allowing access offline also. **Text Sentiment Analysis only works with files that have extrated a text output.** This varies depending on file type, however, if there is no ocr extraction, or text extraction from audio or video via speech recognition, then there will be no text that can be analysed via sentiment analysis. Below is an extract example of the text sentiment analysis output:
+```
+"text_sentiment_analysis": {
+    "sentiment_analysis": {
+        "compound": -0.1531,
+        "negative": 0.097,
+        "neutral": 0.833,
+        "positive": 0.069
+    },
+...
+```
 
 ### TL;DR (Running The App)
 The application is written mainly in python, but runs using various containers within Docker, composed from a single Docker Compose file. Each enrichment is either made from an initial python script that uses Flask as a web framework for sending requests, or from a pre created Docker image from Docker Hub. During testing, requests are made via Postman.
@@ -252,6 +283,6 @@ The application is written mainly in python, but runs using various containers w
 2. If you did not read through the enrichments, you need to make sure you have downloaded the appropriate models and datasets, and have set up your model structure accordingly. If you did, you can skip this step.
     - Follow the [model setup](#model-setup) to create your model directory, and download the models for captioning.
     - Download the other models and datasets for [classification](#classification-models), [categorisation](#categorisation-models), [text sentiment analysis](#sentiment-analysis-models), and [speech-recognition](#speech-recognition-models).
-3. Run `docker-compose build` from your terminal to build the application from the various images and python libraries specified in the Dockerfiles and requirement files. Ensure you are at the root folder location before running the command (/tesseract).
+3. Run `docker-compose build` from your terminal to build the application. Ensure you are at the root folder location that contains the `docker-compose.yml` file before running the command (/tesseract).
 4. Once the containers have been built, run `docker-compose up` to start the containers. You will see text output for each container as they start up. Give it a minute to fully load the containers. Usually video object recognition is last to start up, and you should see `Running on http://0.0.0.0:8181/ (Press CTRL+C to quit)` when it is ready.
 5. You can now send a binary file via a POST request using postman or any other service to `http://localhost:5001/` where `localhost` is the host number of your machine. The running terminal will show progress output and any potential errors.
