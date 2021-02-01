@@ -1,6 +1,9 @@
 # File Information Extractor
-An application that provides various different extractions from a file based on a variety of different enrichments.
-A file is uploaded via binary, and a json response is returned, containing:
+An application that can provide various different extractions from a file type based on a variety of different enrichments.
+A file is uploaded via binary to an endpoint, and a JSON response is returned. Based on the file type, the JSON response will 
+return different output. Below is a summary of the different enrichments created so far, and the corresponding supported file types
+for which they will provide output.
+
 - File Metadata (via. Tika)
 - Speech Recognition where audio and video files are transcribed into text (via. DeepSpeech & CMU Sphinx)
 - Optical Character Recognition (OCR) Extraction where text found in non-audio files such as images or documents is extracted (via. Tika)
