@@ -227,7 +227,8 @@ audi/webm,
 ```
 ***This enrichment uses various different models which must be downloaded and then follow a strict folder and file naming pattern. This results in the setup being a potentially confusing and convoluted process. Ensure to follow the steps correctly.***
 
-The SR library contains support for many different speech libraries but this enrichment uses the CMU Sphinx library, mainly as it can be used offline. Currently, this library only accepts audio files that are in `audio/wav'` format. **Video files are always converted to .wav format for audio**, before the audio file is then sent through speech recognition. CMU Sphinx is the chosen library within SR, as it allows support for multiple languages. The languages that will be supported here are:
+The SR library contains support for many different speech libraries but this enrichment uses the CMU Sphinx library, mainly as it can be used offline. Currently, this library only accepts audio files that are in `audio/wav'` format. **Video files are always converted to .wav format for audio**, before the audio file is then sent through speech recognition. CMU Sphinx is the chosen library within SR, as alongside it being available offline, it also allows support for multiple languages. 
+The languages that will be supported here are:
 - US English
 - French
 - Spanish
@@ -238,7 +239,7 @@ The SR library contains support for many different speech libraries but this enr
 #### Speech Recognition Models
 In order for this to work, the data must be predownloaded for PocketSphinx to use. These models can be downloaded from an open source third-party website, SourceForge. The models can be found [here](https://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/).
 
-The default model used by the recogniser is EN-US, so ensure you download the *US English* model first (cmusphinx-en-us-8khz-5.2.tar.gz). The tar file will need to be unzipped first, and will include various different files that will need to be renamed and restructured.
+The default model used by the recogniser is EN-US, so ensure you download the *US English* model first (_cmusphinx-en-us-8khz-5.2.tar.gz_). The tar file will need to be unzipped first, and will include various different files that will need to be renamed and restructured.
 1. From your `models/` folder, create a new folder named `speech`.
 2. Within this folder, create a sub folder, named `pocketsphinx-data`.
 
