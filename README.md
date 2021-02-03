@@ -339,6 +339,44 @@ Once the models have been downloaded and the folder structure has been created, 
 
 [BACK TO CONTENTS](#contents)
 
+
+### Model Structure
+After creating your model structure and downloading and renaming the models, your structure should look similar to this:
+```
+tesseract/
+models/
+├─ captioning/assets/
+│  ├─ checkpoint/
+│  │  ├─ checkpoint
+│  │  ├─ model2.ckpt-2000000.data-00000-of-00001
+│  │  ├─ model2.ckpt-2000000.index
+│  │  ├─ model2.ckpt-2000000.meta
+│  ├─ word_counts.txt
+├─ categorisation/
+│  ├─ glove.6B.300d.txt
+├─ classification/keras/models/
+│  ├─ imagenet_class_index.json
+│  ├─ vgg16_weights_tf_dim_ordering_tf_kernels.h5
+├─ object_recognition/
+│  ├─ yolo.h5
+├─ sentiment/
+│  ├─ vader_lexicon.txt
+├─ speech/pocketsphinx-data/
+│  ├─ en-US/
+│  │  ├─ acoustic-model/
+|  │  │  ├─ feat.params
+|  │  │  ├─ ...
+|  │  ├─ language-model.lm.bin
+|  │  ├─ pronounciation-dictionary.dict
+│  ├─ fr-FR/
+│  │  ├─ acoustic-model/
+|  │  │  ├─ feat.params
+|  │  │  ├─ ...
+|  │  ├─ language-model.lm.bin
+|  │  ├─ pronounciation-dictionary.dict
+...
+```
+
 ### TL;DR (Running The App)
 The application is written mainly in python, but runs using various containers within Docker, composed from a single Docker Compose file. Each enrichment is either made from an initial python script that uses Flask as a web framework for sending requests, or from a pre created Docker image from Docker Hub. During testing, requests are made via Postman.
 **You will need both Docker and the enrichment models/datasets pre downloaded as a prerequisite to run the application.**
