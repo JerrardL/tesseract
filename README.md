@@ -249,7 +249,7 @@ In order for this to work, the data must be predownloaded for PocketSphinx to us
 8. Rename the `en-us.lm.bin` file to `language-model.lm.bin`.
 9. You should now have a restructured folder `models/pocketsphinx-data/en-US` which contains the `acoustic-model` folder, and the newly named 3 files. The files within `acoustic-model` **remain unchanged.**
 
-The files are being renamed as the models for the other languages all follow a similar structural format. This ensures that the en-US model follows the same nomenclature as the other langauge models and that they will all work and be processed the same way by the recogniser. After this, downloading the other language models should be more straightforward.
+> The files are being renamed as the models for the other languages all follow a similar structural format. This ensures that the en-US model follows the same nomenclature as the other langauge models and that they will all work and be processed the same way by the recogniser. After this, downloading the other language models should be more straightforward.
 
 ##### Downloading the other language models
 These models can be downloaded from an open source third-party website, SourceForge. The models can be found [here](https://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/). The tar file will need to be unzipped first, and will include various different files that will need to be renamed and restructured.
