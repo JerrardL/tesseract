@@ -126,7 +126,7 @@
       ]
     },
     "Video": {
-      "endpoint": "http://speech_recognition:8001/video",
+      "endpoint": "http://new_speech:8765/video",
       "headers": {},
       "supported_types": [
         "video/mpeg",

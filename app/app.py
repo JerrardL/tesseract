@@ -2,7 +2,6 @@ from flask import Flask, request
 import json
 # Import enrichments
 from enrichments.Meta import Meta
-from enrichments.Speech import Speech
 from enrichments.NLP import NLP
 from enrichments.OCR import OCR
 from enrichments.Captioning import Captioning
@@ -32,9 +31,6 @@ def process_enrichments(data):
     # Init classes
     meta = Meta(config)
 
-    #Not In Use While NewSpeech is being used
-    speech_recognition = Speech(config)
-
     ocr = OCR(config)
     nlp = NLP(config)
     captioning = Captioning(config)
@@ -45,7 +41,7 @@ def process_enrichments(data):
     video_object_recognition = VideoOR(config)
     imageai_categorisation = ImageAICategorisation(config)
 
-    new_speech = NewSpeech(config)
+    speech = NewSpeech(config)
     text_sentiment_analysis = TextSentimentAnalysis(config)
     nsfw_image_classifier = NSFWImageClassifier(config)
     nsfw_image_detector = NSFWImageDetector(config)
@@ -68,10 +64,10 @@ def process_enrichments(data):
     #### VIDEO FILES ####
     # NSFW CLASSIFIER
     # Attempt to classify if the video is deemed safe or unsafe (explicit) via NudeNet
-    if content_type in nsfw_video_classifier.supported_types:
-        nsfw_classifier_response = nsfw_video_classifier.execute(data)
-        formatted_response["extractions"].append(
-            {"nsfw_classification": nsfw_classifier_response})
+    # if content_type in nsfw_video_classifier.supported_types:
+    #     nsfw_classifier_response = nsfw_video_classifier.execute(data)
+    #     formatted_response["extractions"].append(
+    #         {"nsfw_classification": nsfw_classifier_response})
     # VIDEO OBJECT RECOGNITION
     # If VIDEO FILE, first attempt to perform object recogntion via imageAI
     if content_type in video.supported_types:
@@ -105,12 +101,12 @@ def process_enrichments(data):
         # SPEECH RECOGNITION
         # If AUDIO FILE, attempt to get speech recognition if audio file via DeepSpeech
     # old speech
-    # elif content_type in speech_recognition.supported_types:
-    #     response = speech_recognition.execute(data)
+    # elif content_type in speech.supported_types:
+    #     response = speech.execute(data)
     #     formatted_response["extractions"].append(
     #         {"speech_extraction": response})
-    elif content_type in new_speech.supported_types:
-        response = new_speech.execute(data)
+    elif content_type in speech.supported_types:
+        response = speech.execute(data)
         formatted_response["extractions"].append(
             {"speech_extraction": response})
         if response["extraction"]:
@@ -128,16 +124,23 @@ def process_enrichments(data):
     else:
         response = ocr.execute(data)
         formatted_response["extractions"].append(response)
-        # If OCR response was blank or whitespace do not perform NLP
+        # If OCR response was blank or whitespace do not perform NLP - NON TEXT IMAGES
         if response["ocr_extraction"] == ocr_errmsg:
             # NSFW CLASSIFIER
-            # If the file was an image, attempt to classify if the image is deemed safe or unsafe (explicit) via NudeNet
+            # Attempt to classify if the image is deemed safe or unsafe (explicit) via NudeNet
             if content_type in nsfw_image_classifier.supported_types:
                 nsfw_classifier_response = nsfw_image_classifier.execute(data)
                 formatted_response["extractions"].append(
                     {"nsfw_classification": nsfw_classifier_response})
+            # NSFW DETECTOR
+            # If the nsfw classification has predicted the image to be at least 50% unsafe,
+            # attempt to detect what potential nsfw content is in the image via NudeNet
+            if nsfw_classifier_response["prediction"]["unsafe"] > 0.5:     
+                nsfw_detector_response = nsfw_image_detector.execute(data)
+                formatted_response["extractions"].append(
+                    {"nsfw_detection": nsfw_detector_response})
             # IMAGE CAPTIONING
-            # If the file was an image, attempt to perform image captioning via Tensorflow
+            # Attempt to perform image captioning via Tensorflow
             if content_type in captioning.supported_types:
                 captioning_response = captioning.execute(data)
                 formatted_response["extractions"].append(
@@ -190,7 +193,7 @@ def language_detection(data):
 
     # Init classes
     meta = Meta(config)
-    speech_recognition = Speech(config)
+    speech = Speech(config)
     ocr = OCR(config)
     language = Language(config)
 
@@ -206,8 +209,8 @@ def language_detection(data):
     # Check Content-Type of file
     content_type = meta_response["Content-Type"]
     # Attempt to get speech recognition if audio file via DeepSpeech
-    if content_type in speech_recognition.supported_types:
-        response = speech_recognition.execute(data)
+    if content_type in speech.supported_types:
+        response = speech.execute(data)
         formatted_response["extractions"].append(
             {"speech_extraction": response})
         # Attempt to detect language of speech here via langdetect:
