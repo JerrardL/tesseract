@@ -14,6 +14,7 @@ for which they will provide output, along with how to download the required mode
 - [Categorisation](#categorisation)
 - [Speech Recognition](#speech-recognition)
 - [Text Sentiment Analysis](#text-sentiment-analysis)
+- [Model Structure](#model-structure)
 - [TL;DR (Running The App)](#tldr-running-the-app)
 - [In Production](#in-production)
 
