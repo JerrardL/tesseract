@@ -12,7 +12,7 @@ class Speech(Enrichment):
 
     def execute(self, data):
         start_time = time.time()
-        # Attempt to get speech recognition if audio file via DeepSpeech
+        # Attempt to get speech recognition if audio file via CMU Sphinx
         speech_response = requests.post(self.endpoint, data=data)
         extraction = speech_response.json()["text"]
         elapsed_time = time.time() - start_time

@@ -1,27 +1,13 @@
-FROM python:3.8 as build
+FROM python:3.6
 
-RUN pip install -U pip virtualenv \
- && virtualenv -p `which python3` /venv/
-
-ENV PATH=/venv/bin/:$PATH
-
-ADD ./requirements.pip /requirements.pip
-RUN pip install -r /requirements.pip
-
-FROM python:3.8
-
+ADD ./requirements.txt /requirements.txt
 RUN apt-get update \
- && apt-get install --no-install-recommends -y ffmpeg \
- && rm -rf /var/lib/apt/lists/*
+&& apt-get install -qq python python-dev python-pip build-essential swig git libpulse-dev libasound2-dev \
+&& apt-get install --no-install-recommends -y ffmpeg \
+&& pip install -r /requirements.txt
 
-RUN groupadd --gid=1000 app \
- && useradd --uid=1000 --gid=1000 --system app
-USER app
-
-COPY --from=build --chown=app:app /venv/ /venv/
-ENV PATH=/venv/bin/:$PATH
-
-COPY --chown=app:app . /app/stt/
 WORKDIR /app
 
-CMD python -m stt.app
+COPY . /app
+
+CMD python app.py

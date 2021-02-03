@@ -19,7 +19,7 @@ def image_detector():
     os.remove('/tmp/image_file')
 
     image_detection = {
-        "NSFW detection": detection
+        "NSFW detection": str(detection)
     }
 
     return image_detection

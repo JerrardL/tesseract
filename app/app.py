@@ -13,7 +13,7 @@ from enrichments.VideoOR import VideoOR
 from enrichments.ImageAICategorisation import ImageAICategorisation
 from enrichments.ImageAIClassification import ImageAIClassification
 
-from enrichments.NewSpeech import NewSpeech
+from enrichments.Speech import Speech
 from enrichments.TextSentimentAnalysis import TextSentimentAnalysis
 from enrichments.NSFWImageClassifier import NSFWImageClassifier
 from enrichments.NSFWImageDetector import NSFWImageDetector
@@ -41,7 +41,7 @@ def process_enrichments(data):
     video_object_recognition = VideoOR(config)
     imageai_categorisation = ImageAICategorisation(config)
 
-    speech = NewSpeech(config)
+    speech = Speech(config)
     text_sentiment_analysis = TextSentimentAnalysis(config)
     nsfw_image_classifier = NSFWImageClassifier(config)
     nsfw_image_detector = NSFWImageDetector(config)
