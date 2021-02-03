@@ -237,9 +237,22 @@ The languages that will be supported here are:
 - Chinese
 
 #### Speech Recognition Models
-In order for this to work, the data must be predownloaded for PocketSphinx to use. These models can be downloaded from an open source third-party website, SourceForge. The models can be found [here](https://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/).
+##### Downloading the default en-US model
+In order for this to work, the data must be predownloaded for PocketSphinx to use. The default model used by the recogniser is US English (en-US) and you can download the model directly from PocketSphinx via their [GitHub repository](https://github.com/cmusphinx/pocketsphinx/tree/master/model). 
+1. Download the whole `en-us` folder, which should contain another `en-us` folder within it, along with 3 other files. You can do this either from downloading the repo and navigating to the folder, or another method.
+2. From your `models/` folder, create a new folder named `speech`.
+3. Within this folder, create a sub folder named `pocketsphinx-data`.
+4. Move the downloaded `en-us` folder into your `models/pocketsphinx-data` folder. After this step, your models folder structure should be `models/pocketsphinx-data/en-us` which should contain another `en-us` folder, and 3 additional files.
+5. Rename the `pocketsphinx-data/en-us` folder to `pocketsphinx-data/en-US`. Rename the nested `en-us` folder to `acoustic-model`. After this step, your new folder structure should be `models/pocketsphinx-data/en-US` which contains the folder `acoustic-model` and the 3 additional files.
+6. Rename the `cmudict-en-us.dict` file to `pronounciation-dictionary.dict`.
+7. Rename the `en-us-phone.lm.bin` file to `language-model-phone.lm.bin`.
+8. Rename the `en-us.lm.bin` file to `language-model.lm.bin`.
+9. You should now have a restructured folder `models/pocketsphinx-data/en-US` which contains the `acoustic-model` folder, and the newly named 3 files. The files within `acoustic-model` **remain unchanged.**
 
-The default model used by the recogniser is EN-US, so ensure you download the *US English* model first (_cmusphinx-en-us-8khz-5.2.tar.gz_). The tar file will need to be unzipped first, and will include various different files that will need to be renamed and restructured.
+The files are being renamed as the models for the other languages all follow a similar structural format. This ensures that the en-US model follows the same nomenclature as the other langauge models and that they will all work and be processed the same way by the recogniser. After this, downloading the other language models should be more straightforward.
+
+##### Downloading the other language models
+These models can be downloaded from an open source third-party website, SourceForge. The models can be found [here](https://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/). The tar file will need to be unzipped first, and will include various different files that will need to be renamed and restructured.
 1. From your `models/` folder, create a new folder named `speech`.
 2. Within this folder, create a sub folder, named `pocketsphinx-data`.
 
