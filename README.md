@@ -111,7 +111,7 @@ Once the models have been downloaded and the folder structure has been created, 
 `"caption"` refers to the caption the generator has provided for the image file, `"index"` refers to the caption number. The generator will provide 3 different captions, ordered by their `"probability"`.
 
 ### ***
-***The remaining enrichments do not use docker images, and are all created from python scripts which use various different libraries and model data to function. All libraries and Python versions required for each enrichment to work are specified in the enrichments corresponding requirements file and Dockerfile, which will install the libraries needed. Certain enrichments, such as Speech Recognition, require the models to be set up in a certain way from within the `models/` directory in order for them to be read correctly. Instructions will also be provided on how to set up these folders. Ensure that you have followed the first step in the [Model Setup](#model-setup) so that you have already got a base model structure before continuing.***
+> ***The remaining enrichments do not use docker images, and are all created from python scripts which use various different libraries and model data to function. All libraries and Python versions required for each enrichment to work are specified in the enrichments corresponding requirements file and Dockerfile, which will install the libraries needed. Certain enrichments, such as Speech Recognition, require the models to be set up in a certain way from within the `models/` directory in order for them to be read correctly. Instructions will also be provided on how to set up these folders. Ensure that you have followed the first step in the [Model Setup](#model-setup) so that you have already got a base model structure before continuing.***
 ### ***
 
 ### Image Classification
@@ -225,7 +225,7 @@ audi/webm,
 +video/wemb,
 +video/mp4
 ```
-***This enrichment uses various different models which must be downloaded and then follow a strict folder and file naming pattern. This results in the setup being a potentially confusing and convoluted process. Ensure to follow the steps correctly.***
+> ***This enrichment uses various different models which must be downloaded and then follow a strict folder and file naming pattern. This results in the setup being a potentially confusing and convoluted process. Ensure to follow the steps correctly.***
 
 The SR library contains support for many different speech libraries but this enrichment uses the CMU Sphinx library, mainly as it can be used offline. Currently, this library only accepts audio files that are in `audio/wav'` format. **Video files are always converted to .wav format for audio**, before the audio file is then sent through speech recognition. CMU Sphinx is the chosen library within SR, as alongside it being available offline, it also allows support for multiple languages. 
 The languages that will be supported here are:
@@ -249,13 +249,37 @@ In order for this to work, the data must be predownloaded for PocketSphinx to us
 8. Rename the `en-us.lm.bin` file to `language-model.lm.bin`.
 9. You should now have a restructured folder `models/pocketsphinx-data/en-US` which contains the `acoustic-model` folder, and the newly named 3 files. The files within `acoustic-model` **remain unchanged.**
 
-> The files are being renamed as the models for the other languages all follow a similar structural format. This ensures that the en-US model follows the same nomenclature as the other langauge models and that they will all work and be processed the same way by the recogniser. After this, downloading the other language models should be more straightforward.
+> _The files are being renamed as the models for the other languages all follow a similar structural format. This ensures that the en-US model follows the same nomenclature as the other langauge models and that they will all work and be processed the same way by the recogniser. Language models for CMU Sphinx will generally have at least 1 langauge model, a pronounciation dictionary, and an acoustic-model folder, containing 7 or 8 other parameters. After this, downloading the other language models should be more straightforward._
 
-##### Downloading the other language models
-These models can be downloaded from an open source third-party website, SourceForge. The models can be found [here](https://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/). The tar file will need to be unzipped first, and will include various different files that will need to be renamed and restructured.
-1. From your `models/` folder, create a new folder named `speech`.
-2. Within this folder, create a sub folder, named `pocketsphinx-data`.
+##### Downloading French, Italian and Chinese langauge models.
+Luckily, the SR GitHub repository provides model folders for French, Mandarin Chinese, and Italian. These models can be found [here](https://github.com/Uberi/speech_recognition/blob/master/reference/pocketsphinx.rst#notes-on-the-structure-of-the-language-data). Clicking the respective links for each language will provide you with a zip file for download. These models all follow the same structure as the one just made for en-US.
+1. Each langauge model will be nested within a `pocketsphinx-data` folder. For example, for International French, after downloading the zip, the folder structure will be `pocketsphinx-data/fr-FR`.
+2. Since we have already created a `pocketsphinx-data` folder. You just need to copy the `fr-FR` folder in its entirety to your `models/pocketsphinx-data` folder.
+3. Files and folder structure do not need to be edited as it already follows the same structure.
+4. Do the same for the remaining two languages.
+5. After this, your `models/pocketsphix-data` folder should now also contain folders for `fr-FR`, `it-IT` and `zh-CN`.
+##### Downloading the other langauge models.
+The other langauge models can be downloaded from an open source third-party website, SourceForge. The models can be found [here](https://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/). Here you will see a list of other languages that will work with CMU Sphinx. For this application, we will only be adding Spanish and German, but you can add the other languages if you would like by following these same steps.
+1. You will want to donwload the `cmusphinx-[language] 5.2.tar.gz` file. For example, with German, download the `cmusphinx-voxforge-de-5.2.tar.gz`.
+2. Untar and unzip the file. Within the folder should be a `model-parameters` folder. Clicking through this should reveal around 7 or 8 files such as `mdef` and `variances`. These files will make up the `acoustic-model`. Create a new languge model folder within `models/pocketsphinx-data` similar to how you created the other languages.
+3. Also within the downloaded folder, will be an `etc` folder. This folder will contain various files, though the only ones we are interested in will be the `.dic/.dict` and `.lm.` files. These files represent the `pronounciation-dictionary` and `language-model` type files. Copy them to your langauge folder within `pocketsphinx-data` and rename them accordingly.
+4. For example, with German, within the `/etc/` folder is `voxforge.lm.bin`. This will be renamed to `language-model.lm.bin`. There is also a `voxforge.dic` file which will be renamed to `pronounciation-dictionary.dict`.
 
+> **These additional languages are optional and only provide additional language support. You only need the en-US model for the SR recognizer to work.**
+
+Once the models have been downloaded and the folder structure has been created, the enrichment will work, allowing access offline also. **Speech Recognition will only work for audio and video files. The default is en-US.** If the audio or video being sent through is in a language that is not english, the SR recogniser will detect and attempt to transcribe the speech, however it will try to transcribe the text in English, which may result in an inaccurate response. Currently, if you want to have a more accurate response for a language other than english, you will have to specify the language from the `recognize_sphinx` function with the `tesseract\app\speech\app.py` file. For example, for a french audio file, the function would be edited to include `language="fr-FR"`. The response will then be more accurate to the French language based on the language model. Research is being done to see if there is a way to detect language directly from audio, so the language will not need to be specified for stronger accuracy. Below is an extract example of the Speech Recognition output for video and audio:
+```
+"video_extraction": {
+    "extraction": "This is an extraction of spoken audio from a video. This is BBC News.",
+    "time_taken": 21.087695360183716
+}
+...
+"speech_extraction": {
+    "extraction": "alice a girl of seven years is feeling bored and drowsy while sitting on the roof and wit her elder sister",
+    "time_taken": 1.9239821434020996
+}
+...
+```
 
 ### Text Sentiment Analysis
 This enrichment provides sentiment analysis on text that has been extracted from image, video, or audio files. This uses the VADER library, within the [NLTK](https://www.nltk.org/) library to provide sentiment analysis on any text that has been extracted. The sentiment result will show how strong it things the text can be perceived as positive, negative or neutral. There is also a compound response which uses a different measurement. It is a summation of valence scores of each word in the lexicon, normalised to values between -1 being most extreme negative, and 1 being most extreme positive. The idea is that you can have have an overall positive sentiment, which may contain stronger classed negative words, but not enough to change the overall text sentiment. Supported types for text sentiment analysis include:
