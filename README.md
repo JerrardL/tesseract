@@ -264,7 +264,7 @@ import nltk
 nltk.download('vader_lexicon')
 ```
 4. Once this has been downloaded. Navigative to to your `C:\Users\AppData` location, dependant on your environment. If AppData is not showing from users you may have to check that hidden files are being shown.
-5. From here navigate to `\Roaming\nltk_data\sentiment\vader_lexicon\vader_lexicon
+5. From here navigate to `\Roaming\nltk_data\sentiment\vader_lexicon\vader_lexicon`
 6. Here you will see the `vader_lexicon.txt` file - copy this file to your `models/sentiment` location.
 
 
@@ -286,7 +286,7 @@ The application is written mainly in python, but runs using various containers w
 1. Ensure you have Docker installed. You can download it [here](https://www.docker.com/products/docker-desktop).
 2. If you did not read through the enrichments, you need to make sure you have downloaded the appropriate models and datasets, and have set up your model structure accordingly. If you did, you can skip this step.
     - Follow the [model setup](#model-setup) to create your model directory, and download the models for captioning.
-    - Download the other models and datasets for [classification](#classification-models), [categorisation](#categorisation-models), [text sentiment analysis](#sentiment-analysis-models), and [speech-recognition](#speech-recognition-models).
+    - Download and place the other models and datasets for [classification](#classification-models), [categorisation](#categorisation-models), [text sentiment analysis](#sentiment-analysis-models), and [speech-recognition](#speech-recognition-models).
 3. Run `docker-compose build` from your terminal to build the application. Ensure you are at the root folder location that contains the `docker-compose.yml` file before running the command (/tesseract).
 4. Once the containers have been built, run `docker-compose up` to start the containers. You will see text output for each container as they start up. Give it a minute to fully load the containers. Usually video object recognition is last to start up, and you should see `Running on http://0.0.0.0:8181/ (Press CTRL+C to quit)` when it is ready.
 5. You can now send a binary file via a POST request using postman or any other service to `http://localhost:5001/` where `localhost` is the host number of your machine. The running terminal will show progress output and any potential errors.
