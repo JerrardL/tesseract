@@ -215,19 +215,19 @@ Once the models have been downloaded and the folder structure has been created, 
 
 ### Speech Recognition
 This enrichment provides speech recognition by transcribing spoken audio detected in both audio and video files into text. This is done from a python script which uses the SpeechRecognition (SR) library. Supported types for Speech Recognition include:
-```
+```diff
 audio/aac,
 audio/vnd.wave,
 audio/mpeg,
-audio/wav,
++audio/wav,
 audi/webm,
-video/mpeg,
-video/wemb,
-video/mp4
++video/mpeg,
++video/wemb,
++video/mp4
 ```
-***This enrichment makes up two separate folders, one of which uses various different models which must be downloaded and then follow a strict folder pattern. This results in the setup being a potentially confusing and convoluted process. Ensure to follow the steps correctly.***
+***This enrichment uses various different models which must be downloaded and then follow a strict folder and file naming pattern. This results in the setup being a potentially confusing and convoluted process. Ensure to follow the steps correctly.***
 
-The SR library contains support for many different speech libraries but this enrichment uses the CMU Sphinx library, mainly as it can be used offline. Currently, this library only accepts audio files that are in `audio/wav'` format. Video files are always converted to .wav format for audio, before the audio file is then sent through speech recognition. Previously, a different speech recognition service, DeepSpeech, was being used for transcribing which allowed other audio file types. This is not in use for now, but its files are still contained in the 'speech' folder for later potential use. For now, we will be using the SpeechRecognition library with CMU Sphinx, as it allows support for multiple languages. This code is locaded in the 'newspeech' folder. 
+The SR library contains support for many different speech libraries but this enrichment uses the CMU Sphinx library, mainly as it can be used offline. Currently, this library only accepts audio files that are in `audio/wav'` format. Video files are always converted to .wav format for audio, before the audio file is then sent through speech recognition. For now, we will be using the SpeechRecognition library with CMU Sphinx, as it allows support for multiple languages. This code is locaded in the 'newspeech' folder. 
 
 
 #### Speech Recognition Models
@@ -293,7 +293,7 @@ The application is written mainly in python, but runs using various containers w
 
 ### In Production
 The following is currently in production and has not yet been added to this offine application version. Once they have been configured and tested the README will be updated to reflect this:
-- New NSFW enrichment that can detect if material is safe or explicit.
-- New speech enrichment to detect what language is being spoken directly from audio.
-- Restructuring of speech recognition models.
+- New NSFW enrichment that can detect if material is safe or explicit (nsfw_classifier & nsfw_detector).
+- Adding support to detect what language is being spoken directly from audio for the speech recognition enrichment.
+- Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
 - New enrichment to translate text into different languages.
