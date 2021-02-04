@@ -12,13 +12,16 @@ from enrichments.Video import Video
 from enrichments.VideoOR import VideoOR
 from enrichments.ImageAICategorisation import ImageAICategorisation
 from enrichments.ImageAIClassification import ImageAIClassification
-
 from enrichments.Speech import Speech
 from enrichments.TextSentimentAnalysis import TextSentimentAnalysis
-from enrichments.NSFWImageClassifier import NSFWImageClassifier
-from enrichments.NSFWImageDetector import NSFWImageDetector
-from enrichments.NSFWVideoClassifier import NSFWVideoClassifier
-from enrichments.NSFWVideoDetector import NSFWVideoDetector
+
+### ALL references to NSFW are commented out whilst they are still
+### being tested to work offline.
+
+# from enrichments.NSFWImageClassifier import NSFWImageClassifier
+# from enrichments.NSFWImageDetector import NSFWImageDetector
+# from enrichments.NSFWVideoClassifier import NSFWVideoClassifier
+# from enrichments.NSFWVideoDetector import NSFWVideoDetector
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -30,7 +33,6 @@ def process_enrichments(data):
 
     # Init classes
     meta = Meta(config)
-
     ocr = OCR(config)
     nlp = NLP(config)
     captioning = Captioning(config)
@@ -40,13 +42,14 @@ def process_enrichments(data):
     video = Video(config)
     video_object_recognition = VideoOR(config)
     imageai_categorisation = ImageAICategorisation(config)
-
     speech = Speech(config)
     text_sentiment_analysis = TextSentimentAnalysis(config)
-    nsfw_image_classifier = NSFWImageClassifier(config)
-    nsfw_image_detector = NSFWImageDetector(config)
-    nsfw_video_classifier = NSFWVideoClassifier(config)
-    nsfw_video_detector = NSFWVideoDetector(config)
+
+
+    # nsfw_image_classifier = NSFWImageClassifier(config)
+    # nsfw_image_detector = NSFWImageDetector(config)
+    # nsfw_video_classifier = NSFWVideoClassifier(config)
+    # nsfw_video_detector = NSFWVideoDetector(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -82,8 +85,8 @@ def process_enrichments(data):
             formatted_response["extractions"].append(
                 {"categories": category_response})
         # SPEECH RECOGNITION for VIDEO
-        # Then attempt to convert video file to audio for extraction, via pydub
-        # Then attempt to do speech recognition on the new audio file via DeepSpeech
+        # Attempt to convert video file to audio for extraction, via pydub,
+        # then attempt to do speech recognition on the new audio file via CMU Sphinx
         video_extraction = video.execute(data)
         formatted_response["extractions"].append(
             {"video_extraction": video_extraction})
@@ -93,13 +96,13 @@ def process_enrichments(data):
             text_sentiment_response = text_sentiment_analysis.execute(video_extraction["extraction"])
             formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
             # NLP
-            # Then, attempt to perform nlp via Scapy
+            # Attempt to perform nlp via Scapy
             nlp_response = nlp.execute(video_extraction["extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
     #### AUDIO FILES ####
-        # SPEECH RECOGNITION
-        # If AUDIO FILE, attempt to get speech recognition if audio file via DeepSpeech
+    # SPEECH RECOGNITION
+    # If AUDIO FILE, attempt to get speech recognition if audio file via CMU Sphinx
     elif content_type in speech.supported_types:
         response = speech.execute(data)
         formatted_response["extractions"].append(
@@ -110,7 +113,7 @@ def process_enrichments(data):
             text_sentiment_response = text_sentiment_analysis.execute(response["extraction"])
             formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
             # NLP
-            # Then, attempt to perform nlp via Scapy
+            # Attempt to perform nlp via Scapy
             nlp_response = nlp.execute(response["extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
@@ -123,17 +126,17 @@ def process_enrichments(data):
         if response["ocr_extraction"] == ocr_errmsg:
             # NSFW CLASSIFIER
             # Attempt to classify if the image is deemed safe or unsafe (explicit) via NudeNet
-            if content_type in nsfw_image_classifier.supported_types:
-                nsfw_classifier_response = nsfw_image_classifier.execute(data)
-                formatted_response["extractions"].append(
-                    {"nsfw_classification": nsfw_classifier_response})
-            # NSFW DETECTOR
-            # If the nsfw classification has predicted the image to be at least 50% unsafe,
-            # attempt to detect what potential nsfw content is in the image via NudeNet
-            if nsfw_classifier_response["prediction"]["unsafe"] > 0.5:     
-                nsfw_detector_response = nsfw_image_detector.execute(data)
-                formatted_response["extractions"].append(
-                    {"nsfw_detection": nsfw_detector_response})
+            # if content_type in nsfw_image_classifier.supported_types:
+            #     nsfw_classifier_response = nsfw_image_classifier.execute(data)
+            #     formatted_response["extractions"].append(
+            #         {"nsfw_classification": nsfw_classifier_response})
+            # # NSFW DETECTOR
+            # # If the nsfw classification has predicted the image to be at least 50% unsafe,
+            # # attempt to detect what potential nsfw content is in the image via NudeNet
+            # if nsfw_classifier_response["prediction"]["unsafe"] > 0.5:     
+            #     nsfw_detector_response = nsfw_image_detector.execute(data)
+            #     formatted_response["extractions"].append(
+            #         {"nsfw_detection": nsfw_detector_response})
             # IMAGE CAPTIONING
             # Attempt to perform image captioning via Tensorflow
             if content_type in captioning.supported_types:
@@ -172,7 +175,7 @@ def process_enrichments(data):
             text_sentiment_response = text_sentiment_analysis.execute(response["ocr_extraction"])
             formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
             # NLP
-            # Then, attempt to perform nlp via Scapy
+            # Attempt to perform nlp via Scapy
             nlp_response = nlp.execute(response["ocr_extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
