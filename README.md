@@ -384,10 +384,11 @@ The application is written mainly in python, but runs using various containers w
 1. Ensure you have Docker installed. You can download it [here](https://www.docker.com/products/docker-desktop).
 2. If you did not read through the enrichments, you need to make sure you have downloaded the appropriate models and datasets, and have set up your model structure accordingly. If you did, you can skip this step.
     - Follow the [model setup](#model-setup) to create your model directory, and download the models for captioning.
-    - Download and place the other models and datasets for [classification](#classification-models), [categorisation](#categorisation-models), [speech recognition](#speech-recognition-models) and [text sentiment analysis](#sentiment-analysis-models).
-3. Run `docker-compose build` from your terminal to build the application. Ensure you are at the root folder location that contains the `docker-compose.yml` file before running the command (/tesseract).
-4. Once the containers have been built, run `docker-compose up` to start the containers. You will see text output for each container as they start up. Give it a minute to fully load the containers. Usually video object recognition is last to start up, and you should see `Running on http://0.0.0.0:8181/ (Press CTRL+C to quit)` when it is ready.
-5. You can now send a binary file via a POST request using postman or any other service to `http://localhost:5001/` where `localhost` is the host number of your machine. The running terminal will show progress output and any potential errors.
+    - Download and place the other models and datasets for [classification](#classification-models)(and object detection), [categorisation](#categorisation-models), [speech recognition](#speech-recognition-models) and [text sentiment analysis](#sentiment-analysis-models).
+3. Make sure your model structure is similar, if not the same, to the model structure [above](#model-structure).
+4. Run `docker-compose build` from your terminal to build the application. Ensure you are at the root folder location that contains the `docker-compose.yml` file before running the command (/tesseract).
+5. Once the containers have been built, run `docker-compose up` to start the containers. You will see text output for each container as they start up. Give it a minute to fully load the containers. Usually video object recognition is last to start up, and you should see `Running on http://0.0.0.0:8181/ (Press CTRL+C to quit)` when it is ready.
+6. You can now send a binary file via a POST request using postman or any other service to `http://localhost:5001/` where `localhost` is the host number of your machine. The running terminal will show progress output and any potential errors.
 
 ### In Production
 The following is currently in production and has not yet been added to this offine application version. Once they have been configured and tested the README will be updated to reflect this:
