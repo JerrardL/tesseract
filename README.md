@@ -248,7 +248,7 @@ The languages that will be supported here are:
 - Chinese
 
 #### Speech Recognition Models
-##### Downloading the default en-US model
+##### Downloading the default en-US language.
 In order for this to work, the data must be predownloaded for PocketSphinx to use. The default model used by the recogniser is US English (en-US) and you can download the model directly from PocketSphinx via their [GitHub repository](https://github.com/cmusphinx/pocketsphinx/tree/master/model). 
 1. Download the whole `en-us` folder, which should contain another `en-us` folder within it, along with 3 other files. You can do this either from downloading the repo and navigating to the folder, or another method.
 2. From your `models/` folder, create a new folder named `speech`.
@@ -260,23 +260,23 @@ In order for this to work, the data must be predownloaded for PocketSphinx to us
 8. Rename the `en-us.lm.bin` file to `language-model.lm.bin`.
 9. You should now have a restructured folder `models/pocketsphinx-data/en-US` which contains the `acoustic-model` folder, and the newly named 3 files. The files within `acoustic-model` **remain unchanged.**
 
-> _The files are being renamed as the models for the other languages all follow a similar structural format. This ensures that the en-US model follows the same nomenclature as the other langauge models and that they will all work and be processed the same way by the recogniser. Language models for CMU Sphinx will generally have at least 1 langauge model, a pronounciation dictionary, and an acoustic-model folder, containing 7 or 8 other parameters. After this, downloading the other language models should be more straightforward._
+> _The files are being renamed as the models for the other languages all follow a similar structural format. This ensures that the en-US model follows the same nomenclature as the other langauge models and that they will all work and be processed the same way by the recogniser. Language models for CMU Sphinx will generally have at least 1 langauge model, a pronounciation dictionary, and an acoustic-model folder, containing 7 or 8 other parameters. After this, downloading the other language models should be more straightforward._ **These next additional languages are optional and only provide additional language support. You only need the en-US model for the SR recognizer to work.**
 
-##### Downloading French, Italian and Chinese langauge models.
+##### Downloading French, Italian and Chinese langauges.
 Luckily, the SR GitHub repository provides model folders for French, Mandarin Chinese, and Italian. These models can be found [here](https://github.com/Uberi/speech_recognition/blob/master/reference/pocketsphinx.rst#notes-on-the-structure-of-the-language-data). Clicking the respective links for each language will provide you with a zip file for download. These models all follow the same structure as the one just made for en-US.
 1. Each langauge model will be nested within a `pocketsphinx-data` folder. For example, for International French, after downloading the zip, the folder structure will be `pocketsphinx-data/fr-FR`.
 2. Since we have already created a `pocketsphinx-data` folder. You just need to copy the `fr-FR` folder in its entirety to your `models/pocketsphinx-data` folder.
 3. Files and folder structure do not need to be edited as it already follows the same structure.
 4. Do the same for the remaining two languages.
 5. After this, your `models/pocketsphix-data` folder should now also contain folders for `fr-FR`, `it-IT` and `zh-CN`.
-##### Downloading the other langauge models.
+##### Downloading the other langauges.
 The other langauge models can be downloaded from an open source third-party website, SourceForge. The models can be found [here](https://sourceforge.net/projects/cmusphinx/files/Acoustic%20and%20Language%20Models/). Here you will see a list of other languages that will work with CMU Sphinx. For this application, we will only be adding Spanish and German, but you can add the other languages if you would like by following these same steps.
 1. You will want to donwload the `cmusphinx-[language] 5.2.tar.gz` file. For example, with German, download the `cmusphinx-voxforge-de-5.2.tar.gz`.
 2. Untar and unzip the file. Within the folder should be a `model-parameters` folder. Clicking through this should reveal around 7 or 8 files such as `mdef` and `variances`. These files will make up the `acoustic-model`. Create a new languge model folder within `models/pocketsphinx-data` similar to how you created the other languages.
 3. Also within the downloaded folder, will be an `etc` folder. This folder will contain various files, though the only ones we are interested in will be the `.dic/.dict` and `.lm.` files. These files represent the `pronounciation-dictionary` and `language-model` type files. Copy them to your langauge folder within `pocketsphinx-data` and rename them accordingly.
 4. For example, with German, within the `/etc/` folder is `voxforge.lm.bin`. This will be renamed to `language-model.lm.bin`. There is also a `voxforge.dic` file which will be renamed to `pronounciation-dictionary.dict`.
 
-> **These additional languages are optional and only provide additional language support. You only need the en-US model for the SR recognizer to work.**
+> _Some language model files will be `.lm`, some will be bin versions `.lm.bin`, and some will be phone language models `phone.lm.bin`. In cases like this, it is safe to upload all of these language models to your `models/pockersphinx-data/[language]` folder._
 
 Once the models have been downloaded and the folder structure has been created, the enrichment will work, allowing access offline also. **Speech Recognition will only work for audio and video files. The default is en-US.** If the audio or video being sent through is in a language that is not english, the SR recogniser will detect and attempt to transcribe the speech, however it will try to transcribe the text in English, which may result in an inaccurate response. Currently, if you want to have a more accurate response for a language other than english, you will have to specify the language from the `recognize_sphinx` function with the `tesseract\app\speech\app.py` file. For example, for a french audio file, the function would be edited to include `language="fr-FR"`. The response will then be more accurate to the French language based on the language model. Research is being done to see if there is a way to detect language directly from audio, so the language will not need to be specified for stronger accuracy. Below is an extract example of the Speech Recognition output for video and audio:
 ```
