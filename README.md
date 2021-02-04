@@ -398,6 +398,9 @@ The following is currently in production and has not yet been added to this offi
 An NSFW enrichment that can detect if material in an image or video is sexually explicit. This is done using the python library [NudeNet](https://github.com/notAI-tech/NudeNet). The library provides two main functions:
 - An **NSFW Classifier** which attempts to class whether an image is 'safe' or 'unsafe' for work.
 - An **NSFW Detector** which detects what is in the image or video that makes it explicit.
+
+Some work on this enrichment has already been completed and merged into the main `app.py` script. The code for this can be found in the `nsfw_classifier` and `nsfw_detector` folders. Currently, The classifier and detector both work well for Image files. More work is needed to be done on Video files. These enrichments also have not been formatted yet to work in an offline environment. For now, **all references to the NSFW enrichment have been commented out** of the running code, until it works fully, so not to disrupt the running of the overall app.
+
 #### Speech Recognition Support
 - Adding support to detect what language is being spoken directly from audio for the speech recognition enrichment.
 - Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
