@@ -17,6 +17,8 @@ for which they will provide output, along with how to download the required mode
 - [Model Structure](#model-structure)
 - [TL;DR (Running The App)](#tldr-running-the-app)
 - [In Production](#in-production)
+    - [NSFW Analyser](#nsfw-enrichment)
+    - [Speech Support](#speech-recognition-support)
 
 ## Enrichments
 ### Meta
@@ -392,7 +394,11 @@ The application is written mainly in python, but runs using various containers w
 
 ### In Production
 The following is currently in production and has not yet been added to this offine application version. Once they have been configured and tested the README will be updated to reflect this:
-- New NSFW enrichment that can detect if material is safe or explicit (nsfw_classifier & nsfw_detector).
+#### NSFW Enrichment
+An NSFW enrichment that can detect if material in an image or video is sexually explicit. This is done using the python library [NudeNet](https://github.com/notAI-tech/NudeNet). The library provides two main functions:
+- An **NSFW Classifier** which attempts to class whether an image is 'safe' or 'unsafe' for work.
+- An **NSFW Detector** which detects what is in the image or video that makes it explicit.
+#### Speech Recognition Support
 - Adding support to detect what language is being spoken directly from audio for the speech recognition enrichment.
 - Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
 - New enrichment to translate text into different languages.
