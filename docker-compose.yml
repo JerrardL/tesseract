@@ -106,24 +106,20 @@ services:
         volumes:
         -   ../models:/models
 
-    # The NSFW enrichment is still in production and currently doesn't work offline yet.
-    # It has been commented out so it doesn't affect the rest of the app when you run it
-    # in an offline environment.
+    nsfw_classifier:
+        build: ./app/nsfw_classifier
+        container_name: nsfw_classifier
+        ports:
+            - "9990:5000"
+        volumes:
+        -   ../models:/models
 
-    # nsfw_classifier:
-    #     build: ./app/nsfw_classifier
-    #     container_name: nsfw_classifier
-    #     ports:
-    #         - "9990:5000"
-    #     volumes:
-    #     -   ../models:/models
-
-    # nsfw_detector:
-    #     build: ./app/nsfw_detector
-    #     container_name: nsfw_detector
-    #     ports:
-    #         - "9991:5000"
-    #     depends_on:
-    #         - nsfw_classifier
-    #     volumes:
-    #     -   ../models:/models
+    nsfw_detector:
+        build: ./app/nsfw_detector
+        container_name: nsfw_detector
+        ports:
+            - "9991:5000"
+        depends_on:
+            - nsfw_classifier
+        volumes:
+        -   ../models:/models

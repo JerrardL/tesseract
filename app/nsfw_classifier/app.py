@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
-from nudenet import NudeClassifier
+from classifier import Classifier
 import os
 
 app = Flask(__name__)
-classifier = NudeClassifier()
+classifier = Classifier()
 
 # Image Route
 @app.route('/image', methods=['POST'])
@@ -43,9 +43,17 @@ def video_classifier():
     os.remove('/tmp/video_file')
 
     nsfw_classification = {}
-    for _, value in classification.items():
-        nsfw_classification["safe"] = float(value["safe"])
-        nsfw_classification["unsafe"] = float(value["unsafe"])
+    safe_total = 0 
+    unsafe_total = 0
+    frame_count = 0
+    for _, value in classification['preds'].items():
+        safe_total += float(value['safe'])
+        unsafe_total += float(value['unsafe'])
+        frame_count += 1
+    safe_average = safe_total / frame_count
+    unsafe_average = unsafe_total / frame_count
+    nsfw_classification["safe average"] = safe_average
+    nsfw_classification["unsafe average"] = unsafe_average
 
     video_classification = {
         "prediction": nsfw_classification

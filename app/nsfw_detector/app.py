@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
-from nudenet import NudeDetector
+from detector import Detector
 import os
 
 app = Flask(__name__)
-detector = NudeDetector()
+detector = Detector()
 
 # Image Route
 @app.route('/image', methods=['POST'])
@@ -17,6 +17,14 @@ def image_detector():
     detection = detector.detect('/tmp/image_file')
 
     os.remove('/tmp/image_file')
+
+    nsfw_detection = []
+    for object in detection:
+        data = {}
+        data['label'] = object['label']
+        data['probability'] = float(object['score'])
+        nsfw_detection.append(data)
+
 
     image_detection = {
         "NSFW detection": str(detection)
@@ -35,10 +43,24 @@ def video_detector():
 
     detection = detector.detect_video('/tmp/video_file')
 
-    os.remove('/tmp/videp_file')
+    os.remove('/tmp/video_file')
+
+    detected_classes = {}
+    for _, value in detection['preds'].items():
+        for frame in value:
+            score = frame["score"]
+            label = frame["label"]
+            
+            if label not in detected_classes:
+                detected_classes[label] = {"scores": []}
+            detected_classes[label]["scores"].append(score)
+    
+    for key, value in detected_classes.items():
+        detected_classes[key]["average"] = sum(value["scores"]) / len(value["scores"])
+        del detected_classes[key]["scores"]
 
     video_detection = {
-        "NSFW detection": detection
+        "NSFW detection": detected_classes
     }
 
     return video_detection

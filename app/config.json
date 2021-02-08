@@ -30,7 +30,8 @@
         "audi/webm",
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ]
     },
     "NLP": {
@@ -77,7 +78,8 @@
         "image/gif",
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ],
       "category_data": {
         "Violent": ["rifle", "handgun", "firearm", "blade", "knife", "blood"],
@@ -108,7 +110,8 @@
         "audi/webm",
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ]
     },
     "Video": {
@@ -117,7 +120,8 @@
       "supported_types": [
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ]
     },
     "VideoOR": {
@@ -126,7 +130,8 @@
       "supported_types": [
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ]
     },
     "ImageAICategorisation": {
@@ -137,7 +142,8 @@
       "supported_types": [
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ],
       "category_data": {
         "Violent": ["rifle", "handgun", "firearm", "blade", "knife", "blood"],
@@ -178,7 +184,8 @@
         "audi/webm",
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ]
     },
     "NSFWImageClassifier": {
@@ -197,7 +204,8 @@
       "supported_types": [
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ]
     },
     "NSFWImageDetector": {
@@ -216,7 +224,8 @@
       "supported_types": [
         "video/mpeg",
         "video/wemb",
-        "video/mp4"
+        "video/mp4",
+        "application/mp4"
       ]
     }
   }
