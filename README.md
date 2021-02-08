@@ -14,10 +14,10 @@ for which they will provide output, along with how to download the required mode
 - [Categorisation](#categorisation)
 - [Speech Recognition](#speech-recognition)
 - [Text Sentiment Analysis](#text-sentiment-analysis)
+- [NSFW Analysis](#nsfw-analysis)
 - [Model Structure](#model-structure)
 - [TL;DR (Running The App)](#tldr-running-the-app)
 - [In Production](#in-production)
-    - [NSFW Analyser](#nsfw-enrichment)
     - [Speech Support](#speech-recognition-support)
 
 ## Enrichments
@@ -340,8 +340,33 @@ Once the models have been downloaded and the folder structure has been created, 
 ...
 ```
 
-[BACK TO CONTENTS](#contents)
+[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
 
+### NSFW Analysis
+This enrichment detects if material in an image or video is sexually explicit and considered not safe for work (nsfw). This is done using the python library [NudeNet](https://github.com/notAI-tech/NudeNet). The library provides two main functions:
+- An **NSFW Classifier** which attempts to class whether an image is 'safe' or 'unsafe' for work.
+- An **NSFW Detector** which detects what is in the image or video that makes it explicit.
+Both of these functions work in a similar way to [image classification](#image-classification) and [video object recognition](#video-object-recognition). 
+
+The _Classifier_ uses a pre defined model to browse through the image or video and see if it contains any material which could be deemed nsfw. After this it will provide an output containing two percentage values of how safe/unsafe it deems the file to be. If the file was a video, the classifier will produce an average safe/unsafe output based on an average of the safe/unsafe percentages for each frame.
+
+**If the classifier deems a file to be more than 50% unsafe**, the file will then go through the _Detector_. The detector will then attempt to name the potentially unsafe objects and provide a percentage value of its probability. If the file was a video, the detector will produce an average percentage value of probability based on the average of percentage probability for each frame.
+
+The NSFW detector can also even detect locations of where it has detected the specified object via boxplot coordinates. For ease of output, this has been removed from the output, but can always be added back at a later time if required.
+
+Supported types for NSFW Analysis include:
+```
+image/png,
+image/jpg,
+image/jpeg,
+image/gif,
+video/mpeg,
+video/wemb,
+video/mp4,
+application/mp4
+```
+
+#### NSFW Analysis Models
 
 ### Model Structure
 After creating your model structure and downloading and renaming the models, your structure should look similar to this:
@@ -386,7 +411,7 @@ The application is written mainly in python, but runs using various containers w
 1. Ensure you have Docker installed. You can download it [here](https://www.docker.com/products/docker-desktop).
 2. If you did not read through the enrichments, you need to make sure you have downloaded the appropriate models and datasets, and have set up your model structure accordingly. If you did, you can skip this step.
     - Follow the [model setup](#model-setup) to create your model directory, and download the models for captioning.
-    - Download and place the other models and datasets for [classification](#classification-models)(and object detection), [categorisation](#categorisation-models), [speech recognition](#speech-recognition-models) and [text sentiment analysis](#sentiment-analysis-models).
+    - Download and place the other models and datasets for [classification](#classification-models)(and object detection), [categorisation](#categorisation-models), [speech recognition](#speech-recognition-models), [text sentiment analysis](#sentiment-analysis-models), and [nsfw analysis](#nsfw-analysis).
 3. Make sure your model structure is similar, if not the same, to the model structure [above](#model-structure).
 4. Run `docker-compose build` from your terminal to build the application. Ensure you are at the root folder location that contains the `docker-compose.yml` file before running the command (/tesseract).
 5. Once the containers have been built, run `docker-compose up` to start the containers. You will see text output for each container as they start up. Give it a minute to fully load the containers. Usually video object recognition is last to start up, and you should see `Running on http://0.0.0.0:8181/ (Press CTRL+C to quit)` when it is ready.
@@ -394,13 +419,6 @@ The application is written mainly in python, but runs using various containers w
 
 ### In Production
 The following is currently in production and has not yet been added to this offine application version. Once they have been configured and tested the README will be updated to reflect this:
-#### NSFW Enrichment
-An NSFW enrichment that can detect if material in an image or video is sexually explicit. This is done using the python library [NudeNet](https://github.com/notAI-tech/NudeNet). The library provides two main functions:
-- An **NSFW Classifier** which attempts to class whether an image is 'safe' or 'unsafe' for work.
-- An **NSFW Detector** which detects what is in the image or video that makes it explicit.
-
-Some work on this enrichment has already been completed and merged into the main `app.py` script. The code for this can be found in the `nsfw_classifier` and `nsfw_detector` folders. Currently, The classifier and detector both work well for Image files. More work is needed to be done on Video files. These enrichments also have not been formatted yet to work in an offline environment. For now, **all references to the NSFW enrichment have been commented out** of the running code, until it works fully, so not to disrupt the running of the overall app.
-
 #### Speech Recognition Support
 - Adding support to detect what language is being spoken directly from audio for the speech recognition enrichment.
 - Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
