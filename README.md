@@ -241,7 +241,7 @@ audi/webm,
 ```
 > ***This enrichment uses various different models which must be downloaded and then follow a strict folder and file naming pattern. This results in the setup being a potentially confusing and convoluted process. Ensure to follow the steps correctly.***
 
-The SR library contains support for many different speech libraries but this enrichment uses the CMU Sphinx library, mainly as it can be used offline. Currently, this library only accepts audio files that are in `audio/wav'` format. **Video files are always converted to .wav format for audio**, before the audio file is then sent through speech recognition. CMU Sphinx is the chosen library within SR, as alongside it being available offline, it also allows support for multiple languages. 
+The SR library contains support for many different speech libraries but this enrichment uses the CMU Sphinx library, mainly as it can be used offline. **Currently, this library only accepts audio files that are in `audio/wav` format.** Video files are _always_ converted to .wav format for audio**, before the audio file is then sent through speech recognition. CMU Sphinx is the chosen library within SR, as alongside it being available offline, it also allows support for multiple languages. 
 The languages that will be supported here are:
 - US English
 - French
