@@ -407,6 +407,8 @@ Once the models have been downloaded and the folder structure has been created, 
 ```
 A complete list of detector classes that the nsfw detector can detect can be found via the [NudeNet git repository](https://github.com/notAI-tech/NudeNet).
 
+[BACK TO CONTENTS](#contents)
+
 ### Model Structure
 After creating your model structure and downloading and renaming the models, your structure should look similar to this:
 ```
@@ -424,6 +426,12 @@ models/
 ├─ classification/keras/models/
 │  ├─ imagenet_class_index.json
 │  ├─ vgg16_weights_tf_dim_ordering_tf_kernels.h5
+├─ nsfw
+│  ├─ classifier_model.onnx
+│  ├─ detector_v2_base_checkpoint.onnx
+│  ├─ detector_v2_base_classes
+│  ├─ detector_v2_default_checkpoint.onnx
+│  ├─ detector_v2_default_classes
 ├─ object_recognition/
 │  ├─ yolo.h5
 ├─ sentiment/
