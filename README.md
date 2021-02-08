@@ -1,6 +1,6 @@
 # File Information Extractor
-An application that can provide various different extractions from a file type based on a variety of different enrichments.
-A file is uploaded via binary to an endpoint, and a JSON response is returned. Based on the file type, the JSON response will 
+This is an application that can provide various different extractions from a file type based on a variety of different enrichments.
+A file is uploaded via binary to an endpoint, and an overall JSON response is returned. Based on the file type, the JSON response will 
 return different output. Below will be a summary of the different enrichments created so far, and the corresponding supported file types
 for which they will provide output, along with how to download the required models where necessary. You can read through each enrichment, or jump to the TL;DR section from the contents for quick text on installation and how to download the models.
 ## Contents
@@ -29,6 +29,7 @@ image/jpg
 image/jpeg
 image/gif
 application/pdf
+application/mp4
 text/plain
 audio/aac
 audio/vnd.wave
@@ -78,7 +79,7 @@ This enrichment provides NLP on files where text has been extracted. NLP works b
 `"end"` refers to the location of the last character, whilst `"start"` refers to the first. `"text"` is the text that was picked up and `"type"` is the category type that spaCy has determined for the text. More information on different types and how spaCy works can be found from the GitHub documentation, located in the link provided above.
 
 ### Image Captioning
-This enrichment provides image captioning for image files. This is done using a docker image, and corresponding python script files which work with the image. The docker image is an Image Caption Generator, provided by Codait, as part of an IBM Developer Code Model Asset Exchange. The docker hub link can be found [here](https://hub.docker.com/r/codait/max-image-caption-generator). Captioning works using Tensorflow framework, and different ML computer vision models, which have been trained using the [COCO Dataset](https://cocodataset.org/#home). Supported types for Image Captioning include:
+This enrichment provides image captioning for image files. This is done using a docker image, and corresponding python script files which work with the image. The docker image is an Image Caption Generator, provided by Codait, as part of an IBM Developer Code Model Asset Exchange. The docker hub link can be found [here](https://hub.docker.com/r/codait/max-image-caption-generator). Captioning works using [Tensorflow](https://www.tensorflow.org/) framework, and different ML computer vision models, which have been trained using the [COCO Dataset](https://cocodataset.org/#home). Supported types for Image Captioning include:
 ```
 image/png,
 image/jpg,
@@ -121,7 +122,7 @@ Once the models have been downloaded and the folder structure has been created, 
 
 ### Image Classification
 This enrichment provides classification on image files that have already gone through image captioning. Classification attempts to detect and name the objects found within an image. This is done from a variety of python script files which use different libraries depending on the framework being used. Images will go through two sets of classification.
-- **Keras Classification**, where images will be classified using the Keras framework and VGG16 computer vision model, trained with data from [ImageNet](http://www.image-net.org/).
+- **Keras Classification**, where images will be classified using the [Keras](https://keras.io/) API and VGG16 computer vision model, trained with data from [ImageNet](http://www.image-net.org/).
 - **ImageAI Classification**, where images will be classified using the ImageAI framework, which uses a [YoloV3](https://pjreddie.com/darknet/yolo/) model for detection, trained with its own data.
 The reasoning for using two classification models is that the ImageAI classifier has the ability to detect people, whereas the Keras classifier can detect more specific objects, such as a weapon, or clothing. Classification immediately follows [Image Captioning](#image-captioning), and so they have the same supported file types.
 
@@ -187,7 +188,7 @@ Remember that Object Frequency relates to how many times the detector has detect
 [BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### Categorisation
-This enrichment provides categorisation on image and video files which have already been classified. This works by using the classified results from image classification or video object recognition to categorise them into departments which share similarities. This works using a gloVe text file which contains a vast amount of words which have been placed into pre defined categories. gloVe represents [Global Vectors for Word Representation](https://nlp.stanford.edu/projects/glove/); a learning algorithm created by people at Stanford University. Categorisation is dependant on classification. It will not work if an image or video has not been classified. Therefore it shares the same supported file types respectively.
+This enrichment provides categorisation on image and video files which have already been classified. This works by using the classified results from image classification or video object recognition to categorise them into departments which share similarities. This works using a gloVe text file which contains a vast amount of words which have been placed into pre defined categories. gloVe represents [Global Vectors for Word Representation](https://nlp.stanford.edu/projects/glove/); a learning algorithm created by people at Stanford University. Categorisation is dependant on classification. It will not work if an image or video has not been classified. Therefore it shares the same supported file types.
 
 Currently, 8 predefined categories have been made for categorisation as follows:
 ```
@@ -348,7 +349,7 @@ This enrichment detects if material in an image or video is sexually explicit an
 - An **NSFW Detector** which detects what is in the image or video that makes it explicit.
 Both of these functions use pre defined models created with [ONNX](https://onnx.ai/), and work in a similar way to [image classification](#image-classification) and [video object recognition](#video-object-recognition). 
 
-The _Classifier_ browses through the image or video and see if it contains any material which could be deemed nsfw. After this it will provide an output containing two percentage values of how safe/unsafe it deems the file to be. If the file was a video, the classifier will produce an average safe/unsafe output based on an average of the safe/unsafe percentages for each frame.
+The _Classifier_ browses through the image or video to see if it contains any material which could be deemed nsfw. After this it will provide an output containing two percentage values of how safe/unsafe it deems the file to be. If the file was a video, the classifier will produce an average safe/unsafe output based on an average of the safe/unsafe percentages for each frame.
 
 **If the classifier deems a file to be more than 50% unsafe**, the file will then go through the _Detector_. The detector will then attempt to name the potentially unsafe objects and provide a percentage value of its probability. If the file was a video, the detector will produce an average percentage value of probability based on the average of percentage probability for each frame.
 
