@@ -343,12 +343,12 @@ Once the models have been downloaded and the folder structure has been created, 
 [BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### NSFW Analysis
-This enrichment detects if material in an image or video is sexually explicit and considered not safe for work (nsfw). This is done using the python library [NudeNet](https://github.com/notAI-tech/NudeNet). The library provides two main functions:
+This enrichment detects if material in an image or video is sexually explicit and considered not safe for work (nsfw). This is done using the python library [NudeNet](https://github.com/notAI-tech/NudeNet). NSFW Analysis is comprised of two sub enrichments:
 - An **NSFW Classifier** which attempts to class whether an image is 'safe' or 'unsafe' for work.
 - An **NSFW Detector** which detects what is in the image or video that makes it explicit.
-Both of these functions work in a similar way to [image classification](#image-classification) and [video object recognition](#video-object-recognition). 
+Both of these functions use pre defined models created with [ONNX](https://onnx.ai/), and work in a similar way to [image classification](#image-classification) and [video object recognition](#video-object-recognition). 
 
-The _Classifier_ uses a pre defined model to browse through the image or video and see if it contains any material which could be deemed nsfw. After this it will provide an output containing two percentage values of how safe/unsafe it deems the file to be. If the file was a video, the classifier will produce an average safe/unsafe output based on an average of the safe/unsafe percentages for each frame.
+The _Classifier_ browses through the image or video and see if it contains any material which could be deemed nsfw. After this it will provide an output containing two percentage values of how safe/unsafe it deems the file to be. If the file was a video, the classifier will produce an average safe/unsafe output based on an average of the safe/unsafe percentages for each frame.
 
 **If the classifier deems a file to be more than 50% unsafe**, the file will then go through the _Detector_. The detector will then attempt to name the potentially unsafe objects and provide a percentage value of its probability. If the file was a video, the detector will produce an average percentage value of probability based on the average of percentage probability for each frame.
 
@@ -367,6 +367,45 @@ application/mp4
 ```
 
 #### NSFW Analysis Models
+You will need to have the onnx models and classes pre downloaded in order for this enrichment to work:
+1. From your `models/` folder, create a new folder named `nsfw`.
+2. You'll need 1 model file for the classifier, and 4 files for the detector. You can get the classifier model, `classifier_model.onnx`, [here](https://github.com/notAI-tech/NudeNet/releases/download/v0/classifier_model.onnx).
+3. The other required detector files can be downloaded from these respective links:
+    - [`detector_v2_default_checkpoint.onnx`](https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_default_checkpoint.onnx)
+    - [`detector_v2_default_classes`](https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_default_classes)
+    - [`detector_v2_base_checkpoint.onnx`](https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_base_checkpoint.onnx)
+    - [`detector_v2_base_classes`](https://github.com/notAI-tech/NudeNet/releases/download/v0/detector_v2_base_classes)
+Remember to **leave file names unchanged.**
+4. Move all of these files into your `models/nsfw` folder.
+
+Once the models have been downloaded and the folder structure has been created, the enrichment will work, allowing access offline also. **NSFW Classification will only work for image and video files. NSFW Detection will only be carried out if the image or video has produced an unsafe NSFW Classification of over 50% (unsafe threshold).** While the classification will be output for all image and video files, if the file has not been deemed to pass the _unsafe threshold_, it will not go through NSFW detection as there will not be much _unsafe_ objects to detect, and could result in an inaccurate response. Below is an extract example of the nsfw analysis for a video file, that has passed the _unsafe threshold_ and also gone through nsfw detection.
+```
+    "nsfw_classification": {
+        "prediction": {
+            "safe average": 0.2675716518001753,
+            "unsafe average": 0.7324283507741278
+        },
+        "time_taken": 12.513134956359863
+    }
+},
+{
+    "nsfw_detection": {
+        "NSFW detection": {
+            "COVERED_BREAST_F": {
+                "average": 0.7290451407432557
+            },
+            "COVERED_BUTTOCKS": {
+                "average": 0.6537264585494995
+            },
+            "COVERED_GENITALIA_F": {
+                "average": 0.7660342454910278
+            },
+            "EXPOSED_ARMPITS": {
+                "average": 0.6700689792633057
+            ...
+...
+```
+A complete list of detector classes that the nsfw detector can detect can be found via the [NudeNet git repository](https://github.com/notAI-tech/NudeNet).
 
 ### Model Structure
 After creating your model structure and downloading and renaming the models, your structure should look similar to this:
@@ -411,7 +450,7 @@ The application is written mainly in python, but runs using various containers w
 1. Ensure you have Docker installed. You can download it [here](https://www.docker.com/products/docker-desktop).
 2. If you did not read through the enrichments, you need to make sure you have downloaded the appropriate models and datasets, and have set up your model structure accordingly. If you did, you can skip this step.
     - Follow the [model setup](#model-setup) to create your model directory, and download the models for captioning.
-    - Download and place the other models and datasets for [classification](#classification-models)(and object detection), [categorisation](#categorisation-models), [speech recognition](#speech-recognition-models), [text sentiment analysis](#sentiment-analysis-models), and [nsfw analysis](#nsfw-analysis).
+    - Download and place the other models and datasets for [classification](#classification-models)(and object detection), [categorisation](#categorisation-models), [speech recognition](#speech-recognition-models), [text sentiment analysis](#sentiment-analysis-models), and [nsfw analysis](#nsfw-analysis-models).
 3. Make sure your model structure is similar, if not the same, to the model structure [above](#model-structure).
 4. Run `docker-compose build` from your terminal to build the application. Ensure you are at the root folder location that contains the `docker-compose.yml` file before running the command (/tesseract).
 5. Once the containers have been built, run `docker-compose up` to start the containers. You will see text output for each container as they start up. Give it a minute to fully load the containers. Usually video object recognition is last to start up, and you should see `Running on http://0.0.0.0:8181/ (Press CTRL+C to quit)` when it is ready.
