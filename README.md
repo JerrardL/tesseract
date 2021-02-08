@@ -426,7 +426,7 @@ models/
 ├─ classification/keras/models/
 │  ├─ imagenet_class_index.json
 │  ├─ vgg16_weights_tf_dim_ordering_tf_kernels.h5
-├─ nsfw
+├─ nsfw/
 │  ├─ classifier_model.onnx
 │  ├─ detector_v2_base_checkpoint.onnx
 │  ├─ detector_v2_base_classes
@@ -440,7 +440,12 @@ models/
 │  ├─ en-US/
 │  │  ├─ acoustic-model/
 |  │  │  ├─ feat.params
-|  │  │  ├─ ...
+|  │  │  ├─ mdef
+|  │  │  ├─ means
+|  │  │  ├─ noisedict
+|  │  │  ├─ sendump
+|  │  │  ├─ transition_matrices
+|  │  │  ├─ variances
 |  │  ├─ language-model.lm.bin
 |  │  ├─ pronounciation-dictionary.dict
 │  ├─ fr-FR/
