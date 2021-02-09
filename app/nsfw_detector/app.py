@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from detector import Detector
 import os
 
@@ -27,7 +27,7 @@ def image_detector():
 
 
     image_detection = {
-        "NSFW detection": str(detection)
+        "NSFW detection": nsfw_detection
     }
 
     return image_detection

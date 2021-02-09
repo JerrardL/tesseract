@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from classifier import Classifier
 import os
 
@@ -29,7 +29,7 @@ def image_classifier():
 
     return image_classification
 
-# Video Route -- TO BE CONFIGURED
+# Video Route
 @app.route('/video', methods=['POST'])
 def video_classifier():
     video_file = request.get_data()

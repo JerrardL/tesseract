@@ -17,10 +17,5 @@ class Captioning(Enrichment):
         captioning_response = requests.post(self.endpoint, files=form_data)
         captioning_extraction = captioning_response.json()
         elapsed_time = time.time() - start_time
-        # FILTERING RESPONSES
-        # valid_captioning = []
-        # for caption in captioning_extraction['predictions']:
-        #     if caption['probability'] > self.class_config['probability_threshold']:
-        #         valid_captioning.append(caption)
         captioning_extraction.update({"time_taken": elapsed_time})
         return captioning_extraction

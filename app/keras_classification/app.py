@@ -29,12 +29,12 @@ def classify():
         preds = model.predict(x)
         # decode the results into a list of tuples (class, description, probability)
         # (one such list for each sample in the batch)
-        prediction = decode_predictions_override(preds, top=3)[0][0][1]
-        confidence = decode_predictions_override(preds, top=3)[0][0][2]
-        mid_pred = decode_predictions_override(preds, top=3)[0][1][1]
-        mid_con = decode_predictions_override(preds, top=3)[0][1][2]
-        low_pred = decode_predictions_override(preds, top=3)[0][2][1]
-        low_con = decode_predictions_override(preds, top=3)[0][2][2]
+        prediction = decode_predictions(preds, top=3)[0][0][1]
+        confidence = decode_predictions(preds, top=3)[0][0][2]
+        mid_pred = decode_predictions(preds, top=3)[0][1][1]
+        mid_con = decode_predictions(preds, top=3)[0][1][2]
+        low_pred = decode_predictions(preds, top=3)[0][2][1]
+        low_con = decode_predictions(preds, top=3)[0][2][2]
         prediction_json = {
             "Best Prediction": {
                 "Prediction": prediction,
@@ -55,10 +55,10 @@ def classify():
         return {"Error": f"COULD NOT CLASSIFY IMAGE: {traceback.format_exc()}"}
 
 
-def decode_predictions_override(preds, top=5):
+def decode_predictions(preds, top=5):
   CLASS_INDEX = None
   if len(preds.shape) != 2 or preds.shape[1] != 1000:
-    raise ValueError('`decode_predictions_override` expects '
+    raise ValueError('`decode_predictions` expects '
                      'a batch of predictions '
                      '(i.e. a 2D array of shape (samples, 1000)). '
                      'Found array with shape: ' + str(preds.shape))

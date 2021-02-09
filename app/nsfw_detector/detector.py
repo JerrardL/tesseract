@@ -12,7 +12,7 @@ def dummy(x):
     return x
 
 
-FILE_URLS = {
+FILE_PATHS = {
     "default": {
         "checkpoint": "/models/nsfw/detector_v2_default_checkpoint.onnx",
         "classes": "/models/nsfw/detector_v2_default_classes",
@@ -32,8 +32,8 @@ class Detector:
         """
         model = Detector()
         """
-        checkpoint = FILE_URLS[model_name]["checkpoint"]
-        classes = FILE_URLS[model_name]["classes"]
+        checkpoint = FILE_PATHS[model_name]["checkpoint"]
+        classes = FILE_PATHS[model_name]["classes"]
 
         checkpoint_path = checkpoint
         classes_path = classes
