@@ -1,24 +1,24 @@
-from flask import Flask, request
 import json
-# Import enrichments
-from enrichments.Meta import Meta
-from enrichments.NLP import NLP
-from enrichments.OCR import OCR
+# Import Enrichments
 from enrichments.Captioning import Captioning
-from enrichments.KerasClassification import KerasClassification
-from enrichments.KerasCategorisation import KerasCategorisation
-from enrichments.Language import Language
-from enrichments.Video import Video
-from enrichments.VideoOR import VideoOR
 from enrichments.ImageAICategorisation import ImageAICategorisation
 from enrichments.ImageAIClassification import ImageAIClassification
-from enrichments.Speech import Speech
-from enrichments.TextSentimentAnalysis import TextSentimentAnalysis
-
+from enrichments.KerasCategorisation import KerasCategorisation
+from enrichments.KerasClassification import KerasClassification
+from enrichments.Language import Language
+from enrichments.Meta import Meta
+from enrichments.NLP import NLP
 from enrichments.NSFWImageClassifier import NSFWImageClassifier
 from enrichments.NSFWImageDetector import NSFWImageDetector
 from enrichments.NSFWVideoClassifier import NSFWVideoClassifier
 from enrichments.NSFWVideoDetector import NSFWVideoDetector
+from enrichments.OCR import OCR
+from enrichments.Speech import Speech
+from enrichments.TextSentimentAnalysis import TextSentimentAnalysis
+from enrichments.Video import Video
+from enrichments.VideoOR import VideoOR
+
+from flask import Flask, request
 
 app = Flask(__name__)
 app.secret_key = 'S3cR3t'
@@ -29,24 +29,22 @@ ocr_errmsg = "NO OCR EXTRACTION FOUND"
 def process_enrichments(data):
 
     # Init classes
-    meta = Meta(config)
-    ocr = OCR(config)
-    nlp = NLP(config)
     captioning = Captioning(config)
-    keras_classification = KerasClassification(config)
-    imageai_classification = ImageAIClassification(config)
-    keras_categorisation = KerasCategorisation(config)
-    video = Video(config)
-    video_object_recognition = VideoOR(config)
     imageai_categorisation = ImageAICategorisation(config)
-    speech = Speech(config)
-    text_sentiment_analysis = TextSentimentAnalysis(config)
-
-
+    imageai_classification = ImageAIClassification(config)    
+    keras_categorisation = KerasCategorisation(config)
+    keras_classification = KerasClassification(config)
+    meta = Meta(config)
+    nlp = NLP(config)
     nsfw_image_classifier = NSFWImageClassifier(config)
     nsfw_image_detector = NSFWImageDetector(config)
     nsfw_video_classifier = NSFWVideoClassifier(config)
-    nsfw_video_detector = NSFWVideoDetector(config)
+    nsfw_video_detector = NSFWVideoDetector(config)    
+    ocr = OCR(config)
+    speech = Speech(config)
+    text_sentiment_analysis = TextSentimentAnalysis(config)    
+    video = Video(config)
+    video_object_recognition = VideoOR(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -61,128 +59,113 @@ def process_enrichments(data):
     # Check Content-Type of file
     content_type = meta_response["Content-Type"]
 
-    #### VIDEO FILES ####
-    # NSFW CLASSIFIER
-    # Attempt to classify if the video is deemed safe or unsafe (explicit) via NudeNet
-    if content_type in nsfw_video_classifier.supported_types:
+    def video_files(data):
+        # Classify if the video is NSFW
         nsfw_classifier_response = nsfw_video_classifier.execute(data)
         formatted_response["extractions"].append(
             {"nsfw_classification": nsfw_classifier_response})
-        # # NSFW DETECTOR
-        # # If the nsfw classification has predicted the image to be at least 50% unsafe,
-        # # attempt to detect what potential nsfw content is in the image via NudeNet
+        # Detect the NSFW content if video has been classified to be at least 50% unsafe
         if nsfw_classifier_response["prediction"]["unsafe average"] > 0.5:     
             nsfw_detector_response = nsfw_video_detector.execute(data)
             formatted_response["extractions"].append(
                 {"nsfw_detection": nsfw_detector_response})
-    # VIDEO OBJECT RECOGNITION
-    # If VIDEO FILE, first attempt to perform object recogntion via imageAI
-    if content_type in video.supported_types:
+        # Perform standard object recognition
         video_or_extraction = video_object_recognition.execute(data)
-        formatted_response["extractions"].append(
-            {"video_object_recognition": video_or_extraction})
-        # VIDEO CATEGORISATION
-        # If objects were detected, attempt to categorise the three most populous objects via gloVe & ImageAI
+        formatted_response["extractions"].append({"video_object_recognition": video_or_extraction})
+        # Categorise the objects detected
         if video_or_extraction:
-            category_response = imageai_categorisation.execute(
-                video_or_extraction['Object Frequency'])
+            category_response = imageai_categorisation.execute(video_or_extraction['Object Frequency'])
             formatted_response["extractions"].append(
                 {"categories": category_response})
-        # SPEECH RECOGNITION for VIDEO
-        # Attempt to convert video file to audio for extraction, via pydub,
-        # then attempt to do speech recognition on the new audio file via CMU Sphinx
+        # Convert the video to audio for speech extraction
         video_extraction = video.execute(data)
         formatted_response["extractions"].append(
             {"video_extraction": video_extraction})
+        # Perform sentiment analysis on the extracted text
         if video_extraction["extraction"]:
-            # TEXT SENTIMENT ANALYSIS
-            # If text was extracted from the file, first attempt to perform sentiment analysis via nltk
             text_sentiment_response = text_sentiment_analysis.execute(video_extraction["extraction"])
-            formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
-            # NLP
-            # Attempt to perform nlp via Scapy
+            formatted_response["extractions"].append(
+                {"text_sentiment_analysis": text_sentiment_response})
+            # Perform NLP on the extracted text
             nlp_response = nlp.execute(video_extraction["extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
-    #### AUDIO FILES ####
-    # SPEECH RECOGNITION
-    # If AUDIO FILE, attempt to get speech recognition if audio file via CMU Sphinx
-    elif content_type in speech.supported_types:
+
+    def audio_files(data):
+        # Perform speech recognition
         response = speech.execute(data)
         formatted_response["extractions"].append(
             {"speech_extraction": response})
+        # Perform sentiment analysis on the extracted text
         if response["extraction"]:
-            # TEXT SENTIMENT ANALYSIS
-            # If text was extracted from the file, first attempt to perform sentiment analysis via nltk
             text_sentiment_response = text_sentiment_analysis.execute(response["extraction"])
             formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
-            # NLP
-            # Attempt to perform nlp via Scapy
+            # Perform NLP on the extracted text
             nlp_response = nlp.execute(response["extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
-    #### IMAGE FILES ####
-    # If NOT AUDIO OR VIDEO FILE, attempt to perform ocr text extraction via Tika
-    else:
+
+    def image_text_files(data):
+        # Attempt OCR extraction on the file
         response = ocr.execute(data)
         formatted_response["extractions"].append(response)
         # If OCR response was blank or whitespace do not perform NLP - NON TEXT IMAGES
         if response["ocr_extraction"] == ocr_errmsg:
-            # NSFW CLASSIFIER
-            # Attempt to classify if the image is deemed safe or unsafe (explicit) via NudeNet
+            # Classify if the video is NSFW
             if content_type in nsfw_image_classifier.supported_types:
                 nsfw_classifier_response = nsfw_image_classifier.execute(data)
                 formatted_response["extractions"].append(
                     {"nsfw_classification": nsfw_classifier_response})
-                # # NSFW DETECTOR
-                # # If the nsfw classification has predicted the image to be at least 50% unsafe,
-                # # attempt to detect what potential nsfw content is in the image via NudeNet
+                # Detect the NSFW content if video has been classified to be at least 50% unsafe
                 if nsfw_classifier_response["prediction"]["unsafe"] > 0.5:     
                     nsfw_detector_response = nsfw_image_detector.execute(data)
                     formatted_response["extractions"].append(
                         {"nsfw_detection": nsfw_detector_response})
-            # IMAGE CAPTIONING
-            # Attempt to perform image captioning via Tensorflow
-            if content_type in captioning.supported_types:
+                # Attempt to perform image captioning via Tensorflow
                 captioning_response = captioning.execute(data)
                 formatted_response["extractions"].append(
                     {"image_captioning": captioning_response})
-                # IMAGEAI CLASSIFICATION
+                # Image AI
                 # Attempt to classify the image via ImageAI
                 imageai_classification_response = imageai_classification.execute(data)
                 formatted_response["extractions"].append(
                     {"ImageAI classification": imageai_classification_response})
                 # If the image cannot be classified or encounters and error, do not perform categorisation
                 if imageai_classification_response and "Error" not in imageai_classification_response:
-                    # IMAGEAI CATEGORISATION
                     # If objects were detected, attempt to categorise the three most populous objects via gloVe and ImageAI
-                        category_response = imageai_categorisation.execute(
-                            imageai_classification_response['Object Found, Percentage Probability'])
-                        formatted_response["extractions"].append(
-                            {"ImageAI categories": category_response})
-                # KERAS CLASSIFICATION
+                    category_response = imageai_categorisation.execute(
+                        imageai_classification_response['Object Found, Percentage Probability'])
+                    formatted_response["extractions"].append(
+                        {"ImageAI categories": category_response})
+                # Keras
                 # Attempt to classify image via Keras
                 keras_classification_response = keras_classification.execute(data)
                 formatted_response["extractions"].append(
                     {"Keras classification": keras_classification_response})
                 # If the image cannot be classified or encounters and error, do not perform categorisation
                 if keras_classification_response and "Error" not in keras_classification_response:
-                    # KERAS CATEGORISATION
                     # If objects were detected, attempt to categorise the three most populous objects via gloVe and Keras
                         category_response = keras_categorisation.execute(
                             keras_classification_response)
                         formatted_response["extractions"].append(
                             {"Keras categories": category_response})
         elif response["ocr_extraction"]:
-            # TEXT SENTIMENT ANALYSIS
-            # If text was extracted from the file, first attempt to perform sentiment analysis via nltk
+            # Perform sentiment analysis on the extracted text
             text_sentiment_response = text_sentiment_analysis.execute(response["ocr_extraction"])
             formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
-            # NLP
-            # Attempt to perform nlp via Scapy
+            # Perform NLP on the extracted text
             nlp_response = nlp.execute(response["ocr_extraction"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
+
+    # If the file type is video
+    if content_type in video.supported_types:
+        video_files(data)
+    # If the file type is audio
+    elif content_type in speech.supported_types:
+        audio_files(data)
+    else:
+        image_text_files(data)
 
     # Format JSON
     formatted_response_json = json.dumps(formatted_response, indent=4)
