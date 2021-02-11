@@ -227,6 +227,16 @@
         "video/mp4",
         "application/mp4"
       ]
+    },
+    "FacialExpression": {
+      "endpoint": "http://facial_expression:8411",
+      "headers": {},
+      "supported_types": [
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif"
+      ]
     }
   }
 }

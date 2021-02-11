@@ -17,6 +17,7 @@ from enrichments.Speech import Speech
 from enrichments.TextSentimentAnalysis import TextSentimentAnalysis
 from enrichments.Video import Video
 from enrichments.VideoOR import VideoOR
+from enrichments.FacialExpression import FacialExpression
 
 from flask import Flask, request
 
@@ -45,6 +46,7 @@ def process_enrichments(data):
     text_sentiment_analysis = TextSentimentAnalysis(config)    
     video = Video(config)
     video_object_recognition = VideoOR(config)
+    facial_expression = FacialExpression(config)
 
     # METADATA
     # Send file through to Tika for metadata
@@ -149,6 +151,10 @@ def process_enrichments(data):
                             keras_classification_response)
                         formatted_response["extractions"].append(
                             {"Keras categories": category_response})
+                # Facial Expression [TEST]
+                expression_response = facial_expression.execute(data)
+                formatted_response["extractions"].append(
+                    {"facial expression": expression_response})
         elif response["ocr_extraction"]:
             # Perform sentiment analysis on the extracted text
             text_sentiment_response = text_sentiment_analysis.execute(response["ocr_extraction"])

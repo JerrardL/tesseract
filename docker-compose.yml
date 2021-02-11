@@ -123,3 +123,11 @@ services:
             - nsfw_classifier
         volumes:
         -   ../models:/models
+
+    facial_expression:
+        build: ./app/facial_expression
+        container_name: facial_expression
+        ports:
+            - "8411:5000"
+        depends_on: 
+            - tika
