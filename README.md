@@ -19,6 +19,7 @@ for which they will provide output, along with how to download the required mode
 - [TL;DR (Running The App)](#tldr-running-the-app)
 - [In Production](#in-production)
     - [Speech Support](#speech-recognition-support)
+    - [Facial Expressions](#facial-expressions)
 
 ## Enrichments
 ### Meta
@@ -476,3 +477,5 @@ The following is currently in production and has not yet been added to this offi
 - Adding support to detect what language is being spoken directly from audio for the speech recognition enrichment.
 - Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
 - New enrichment to translate text into different languages.
+#### Facial Expressions
+A new enrichment which can detect facial expressions from faces detected in image and video files. This is done using the facial expression recogniser library, `fer`. More information on this and how the library works can be found via their GitHub [here](https://github.com/justinshenk/fer).
