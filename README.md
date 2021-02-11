@@ -478,4 +478,21 @@ The following is currently in production and has not yet been added to this offi
 - Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
 - New enrichment to translate text into different languages.
 #### Facial Expressions
-A new enrichment which can detect facial expressions from faces detected in image and video files. This is done using the facial expression recogniser library, `fer`. More information on this and how the library works can be found via their GitHub [here](https://github.com/justinshenk/fer).
+A new enrichment which can detect facial expressions from faces detected in image and video files. This is done using the facial expression recogniser library, `fer`. More information on this and how the library works can be found via their GitHub [here](https://github.com/justinshenk/fer). If faces have been detected in the image, the detector will produce an output containing six different emotional categories:
+- **Anger**
+- **Disgust**
+- **Fear**
+- **Happy**
+- **Sad**
+- **Surprise**
+- **Neutral**
+
+The response will then produce a percentage output for each emotion on how strong it thinks the detected face represents each emotion. Current supported types for Facial Expressions include:
+```
+image/png,
+image/jpg,
+image/jpeg,
+image/gif
+```
+
+As this enrichment solely uses a python library, additional models and/or dataset **are not** required.
