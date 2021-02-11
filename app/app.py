@@ -151,7 +151,7 @@ def process_enrichments(data):
                             keras_classification_response)
                         formatted_response["extractions"].append(
                             {"Keras categories": category_response})
-                # Facial Expression [TEST]
+                # Detect Facial Expression on any faces in the image
                 expression_response = facial_expression.execute(data)
                 formatted_response["extractions"].append(
                     {"facial expression": expression_response})
