@@ -495,4 +495,4 @@ image/jpeg,
 image/gif
 ```
 
-As this enrichment solely uses a python library, additional models and/or dataset **are not** required.
+As this enrichment solely uses a python library, additional models and/or dataset **are not** required. Currently, this library only works with Image files. The Video pathway seems to produce a `cannot connect to X server` error when trying to run (RE: OpenCV cv2.VideoCapture). A different facial expression recogniser will be used for Video files until a work around or fix can be made for this.
