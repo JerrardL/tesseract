@@ -10,19 +10,28 @@ r = sr.Recognizer()
 @app.route('/', methods=['POST'])
 def stt():
     speech = request.get_data()
+    language = request.args.get('language')
+    if language == None:
+        language = "en-US"
+
+    languages = language.split(sep=',')
+    extractions = {}
 
     with sr.AudioFile(BytesIO(speech)) as source:
         audio = r.record(source)
 
-    # recognize speech using Sphinx
-    try:
-        text = r.recognize_sphinx(audio)
-    except sr.UnknownValueError:
-        text = "Sphinx could not understand audio"
-    except sr.RequestError as e:
-        text = "Sphinx error; {0}".format(e)
+    for lang in languages:
+        # recognize speech using Sphinx
+        try:
+            text = r.recognize_sphinx(audio, language=lang)
+        except sr.UnknownValueError:
+            text = "Sphinx could not understand audio"
+        except sr.RequestError as e:
+            text = "Sphinx error; {0}".format(e)
 
-    return jsonify({"text": text})
+        extractions[lang] = text
+
+    return jsonify(extractions)
 
 @app.route('/video', methods=['POST'])
 def stt_video():

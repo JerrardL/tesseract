@@ -27,7 +27,7 @@ config = None
 ocr_errmsg = "NO OCR EXTRACTION FOUND"
 
 # Main function to format the response
-def process_enrichments(data):
+def process_enrichments(data, language):
 
     # Init classes
     captioning = Captioning(config)
@@ -93,17 +93,17 @@ def process_enrichments(data):
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
 
-    def audio_files(data):
+    def audio_files(data, language):
         # Perform speech recognition
-        response = speech.execute(data)
+        response = speech.execute(data, language)
         formatted_response["extractions"].append(
             {"speech_extraction": response})
         # Perform sentiment analysis on the extracted text
-        if response["extraction"]:
-            text_sentiment_response = text_sentiment_analysis.execute(response["extraction"])
+        if "en-US" in response["extraction"].keys():
+            text_sentiment_response = text_sentiment_analysis.execute(response["extraction"]["en-US"])
             formatted_response["extractions"].append({"text_sentiment_analysis": text_sentiment_response})
             # Perform NLP on the extracted text
-            nlp_response = nlp.execute(response["extraction"])
+            nlp_response = nlp.execute(response["extraction"]["en-US"])
             formatted_response["extractions"].append(
                 {"nlp_extraction": nlp_response})
 
@@ -169,7 +169,7 @@ def process_enrichments(data):
         video_files(data)
     # If the file type is audio
     elif content_type in speech.supported_types:
-        audio_files(data)
+        audio_files(data, language)
     else:
         image_text_files(data)
 
@@ -231,7 +231,8 @@ def language_detection(data):
 @app.route('/', methods=['POST'])
 def upload_binary_file():
     file_as_binary = request.get_data()
-    return process_enrichments(file_as_binary)
+    language = request.args.get('language')
+    return process_enrichments(file_as_binary, language)
 
 # Language Route:
 # Use POST method with binary and file to upload via Postman
