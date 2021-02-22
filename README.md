@@ -269,7 +269,7 @@ In order for this to work, the data must be predownloaded for PocketSphinx to us
 ##### Downloading French, Italian and Chinese langauges.
 Luckily, the SR GitHub repository provides model folders for French, Mandarin Chinese, and Italian. These models can be found [here](https://github.com/Uberi/speech_recognition/blob/master/reference/pocketsphinx.rst#installing-other-languages). Clicking the respective links for each language will provide you with a zip file for download. These models all follow the same structure as the one just made for en-US.
 1. Each langauge model will be nested within a `pocketsphinx-data` folder. For example, for International French, after downloading the zip, the folder structure will be `pocketsphinx-data/fr-FR`.
-2. Since we have already created a `pocketsphinx-data` folder. You just need to copy the `fr-FR` folder in its entirety to your `models/pocketsphinx-data` folder.
+2. Since we have already created a `pocketsphinx-data` folder. You just need to copy the `fr-FR` folder from within the exisiting `pocketsphinx-data/fr-FR` in its entirety to your `models/pocketsphinx-data` folder.
 3. Files and folder structure do not need to be edited as it already follows the same structure.
 4. Do the same for the remaining two languages.
 5. After this, your `models/pocketsphix-data` folder should now also contain folders for `fr-FR`, `it-IT` and `zh-CN`.
