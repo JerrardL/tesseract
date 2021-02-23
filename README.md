@@ -13,6 +13,7 @@ for which they will provide output, along with how to download the required mode
 - [Video Object Recognition](#video-object-recognition)
 - [Categorisation](#categorisation)
 - [Speech Recognition](#speech-recognition)
+    - [Non-English Transcription](#transcribing-other-non-english-languages)
 - [Text Sentiment Analysis](#text-sentiment-analysis)
 - [NSFW Analysis](#nsfw-analysis)
 - [Model Structure](#model-structure)
@@ -282,7 +283,13 @@ The other langauge models can be downloaded from an open source third-party webs
 
 > _Some language model files will be `.lm`, some will be bin versions `.lm.bin`, and some will be phone language models `phone.lm.bin`. In cases like this, it is safe to upload all of these language models to your `models/pockersphinx-data/[language]` folder. Though **at a minimum you will need the `.lm.bin` file.** If you only have a `.lm` file, rename it to `.lm.bin`. It will still work. The same goes for `.dic` files being renamed to `.dict`._
 
-Once the models have been downloaded and the folder structure has been created, the enrichment will work, allowing access offline also. **Speech Recognition will only work for audio and video files. The default is en-US.** If the audio or video being sent through is in a language that is not english, the SR recogniser will detect and attempt to transcribe the speech, however it will try to transcribe the text in English, which may result in an inaccurate response. Currently, if you want to have a more accurate response for a language other than english, you will have to specify the language from the `recognize_sphinx` function with the `tesseract\app\speech\app.py` file. For example, for a french audio file, the function would be edited to include `language="fr-FR"`. The response will then be more accurate to the French language based on the language model. Research is being done to see if there is a way to detect language directly from audio, so the language will not need to be specified for stronger accuracy. Below is an extract example of the Speech Recognition output for video and audio:
+Once the models have been downloaded and the folder structure has been created, the enrichment will work, allowing access offline also. **Speech Recognition will only work for audio and video files. The default is en-US.**
+
+##### Transcribing Other Non-English Languages
+
+If the audio or video being sent through is in a language that is not english, the SR recogniser will detect and attempt to transcribe the speech, however it will try to transcribe the text in English, which may result in an inaccurate response. Currently, if you want to have a more accurate response for a language other than english, you will have to specify the language from the `recognize_sphinx` function with the `tesseract\app\speech\app.py` file. For example, for a french audio file, the function would be edited to include `language="fr-FR"`. The response will then be more accurate to the French language based on the language model. Research is being done to see if there is a way to detect language directly from audio, so the language will not need to be specified for stronger accuracy. 
+
+Below is an extract example of the Speech Recognition output for video and audio:
 ```
 "video_extraction": {
     "extraction": "This is an extraction of spoken audio from a video. This is BBC News.",
