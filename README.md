@@ -449,7 +449,29 @@ image/jpeg,
 image/gif
 ```
 
-As this enrichment solely uses a python library, additional models and/or dataset **are not** required. Currently, this library only works with Image files. The Video pathway seems to produce a `cannot connect to X server` error when trying to run (RE: OpenCV cv2.VideoCapture). A different facial expression recogniser may be used for Video files until a work around or fix can be made for this.
+As this enrichment solely uses a python library, **additional models and/or datasets are not required.** Currently, this library only works with Image files. The Video pathway seems to produce a `cannot connect to X server` error when trying to run (RE: OpenCV cv2.VideoCapture). A different facial expression recogniser may be used for Video files until a work around or fix can be made for this. Below is an extract example of the facial expression output:
+```
+{
+    "facial expression": {
+        "1": {
+            "angry": 0.0,
+            "disgust": 0.0,
+            "fear": 0.0,
+            "happy": 0.99,
+            "neutral": 0.0,
+            "sad": 0.0,
+            "surprise": 0.0
+        },
+        "2": {
+            "angry": 0.13,
+            "disgust": 0.01,
+            "fear": 0.03,
+            "happy": 0.67,
+            "neutral": 0.04,
+            "sad": 0.13,
+            "surprise": 0.0
+...
+```  
 
 [BACK TO CONTENTS](#contents)
 
