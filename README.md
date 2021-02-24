@@ -300,12 +300,17 @@ Languages are specified using an *ISO 639* language code and *ISO 3166* country 
 Below is an extract example of the Speech Recognition output for video and audio:
 ```
 "video_extraction": {
-    "extraction": "This is an extraction of spoken audio from a video. This is BBC News.",
+    "extraction": {
+    "en-US": "This is an extraction of spoken audio from a video. This is BBC News."
+    },
     "time_taken": 21.087695360183716
 }
 ...
 "speech_extraction": {
-    "extraction": "alice a girl of seven years is feeling bored and drowsy while sitting on the roof and wit her elder sister",
+    "extraction": {
+    "en-US": "zhu zhu of food would usually don't go to nashville do not have to bounce to shop should use",
+    "fr-FR": "je joue aux football je joue bien en football je nage je nage bien je danse je chante je lis"
+    },
     "time_taken": 1.9239821434020996
 }
 ...
