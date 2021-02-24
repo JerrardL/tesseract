@@ -16,11 +16,11 @@ for which they will provide output, along with how to download the required mode
     - [Non-English Transcription](#transcribing-other-non-english-languages)
 - [Text Sentiment Analysis](#text-sentiment-analysis)
 - [NSFW Analysis](#nsfw-analysis)
+- [Facial Expressions](#facial-expressions)
 - [Model Structure](#model-structure)
 - [TL;DR (Running The App)](#tldr-running-the-app)
 - [In Production](#in-production)
     - [Speech Support](#speech-recognition-support)
-    - [Facial Expressions](#facial-expressions)
 
 ## Enrichments
 ### Meta
@@ -429,6 +429,28 @@ Once the models have been downloaded and the folder structure has been created, 
 ```
 A complete list of detector classes that the nsfw detector can detect can be found via the [NudeNet git repository](https://github.com/notAI-tech/NudeNet).
 
+[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
+
+### Facial Expressions
+A new enrichment which can detect facial expressions from faces detected in image and video files. This is done using the facial expression recogniser library, `fer`. More information on this and how the library works can be found via their GitHub [here](https://github.com/justinshenk/fer). If faces have been detected in the image, the detector will produce an output containing six different emotional categories:
+- **Anger**
+- **Disgust**
+- **Fear**
+- **Happy**
+- **Sad**
+- **Surprise**
+- **Neutral**
+
+The response will then produce a percentage output for each emotion on how strong it thinks the detected face represents each emotion. Current supported types for Facial Expressions include:
+```
+image/png,
+image/jpg,
+image/jpeg,
+image/gif
+```
+
+As this enrichment solely uses a python library, additional models and/or dataset **are not** required. Currently, this library only works with Image files. The Video pathway seems to produce a `cannot connect to X server` error when trying to run (RE: OpenCV cv2.VideoCapture). A different facial expression recogniser may be used for Video files until a work around or fix can be made for this.
+
 [BACK TO CONTENTS](#contents)
 
 ### Model Structure
@@ -497,25 +519,5 @@ The following is currently in production and has not yet been added to this offi
 - Adding support to detect what language is being spoken directly from audio for the speech recognition enrichment.
 - Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
 - New enrichment to translate text into different languages.
-#### Facial Expressions
-A new enrichment which can detect facial expressions from faces detected in image and video files. This is done using the facial expression recogniser library, `fer`. More information on this and how the library works can be found via their GitHub [here](https://github.com/justinshenk/fer). If faces have been detected in the image, the detector will produce an output containing six different emotional categories:
-- **Anger**
-- **Disgust**
-- **Fear**
-- **Happy**
-- **Sad**
-- **Surprise**
-- **Neutral**
-
-The response will then produce a percentage output for each emotion on how strong it thinks the detected face represents each emotion. Current supported types for Facial Expressions include:
-```
-image/png,
-image/jpg,
-image/jpeg,
-image/gif
-```
-
-As this enrichment solely uses a python library, additional models and/or dataset **are not** required. Currently, this library only works with Image files. The Video pathway seems to produce a `cannot connect to X server` error when trying to run (RE: OpenCV cv2.VideoCapture). A different facial expression recogniser will be used for Video files until a work around or fix can be made for this.
-
 
 [BACK TO TOP](#file-information-extractor)
