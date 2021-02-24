@@ -287,17 +287,30 @@ Once the models have been downloaded and the folder structure has been created, 
 
 ##### Transcribing Other Non-English Languages
 
-If the audio or video being sent through is in a language that is not english, the SR recogniser will detect and attempt to transcribe the speech, however it will try to transcribe the text in English, which may result in an inaccurate response. Currently, if you want to have a more accurate response for a language other than english, you will have to specify the language from the `recognize_sphinx` function with the `tesseract\app\speech\app.py` file. For example, for a french audio file, the function would be edited to include `language="fr-FR"`. The response will then be more accurate to the French language based on the language model. Research is being done to see if there is a way to detect language directly from audio, so the language will not need to be specified for stronger accuracy. 
+If the audio or video being sent through is in a language that is not english, the SR recogniser will detect and attempt to transcribe the speech however, by default it will try to transcribe the text in English, which may result in an inaccurate response. If you happen to know the language of your file, in order to receive a more accurate response for a language other than english, you can specifiy the language as a query parameter added to the original URL. For example, the standard base endpoint is `/`. If you have a french audio file, and would like the transcription to check for french language, you can set the query param to `language=fr-FR`. This can be done by entering the params in specified fields using an app such as Postman, or manually added to the URL like this `/?language=fr-FR`. The response will then be more accurate to the French language based on the language model. Additionally, if you would like the transcription to work for multiple languages at once, you can specify other languages that you would like by adding additional languages using comma (,) as the delimeter. E.g. `/?language=fr-FR,en-US` will provide both a french and english response.
+
+Languages are specified using an *ISO 639* language code and *ISO 3166* country code. So US English is represented as `en-US`. All languages follow this format and so must be referenced this way when calling a model via the query params. For reference, these are the codes for the languages mentioned in this app:
+- `en-US` US English
+- `de-DE` Traditional German
+- `es-ES` Traditional Spanish
+- `fr-FR` Traditional French
+- `it-IT` Traditional Italian
+- `zh-CN` Mandarin Chinese
 
 Below is an extract example of the Speech Recognition output for video and audio:
 ```
 "video_extraction": {
-    "extraction": "This is an extraction of spoken audio from a video. This is BBC News.",
+    "extraction": {
+    "en-US": "This is an extraction of spoken audio from a video. This is BBC News."
+    },
     "time_taken": 21.087695360183716
 }
 ...
 "speech_extraction": {
-    "extraction": "alice a girl of seven years is feeling bored and drowsy while sitting on the roof and wit her elder sister",
+    "extraction": {
+    "en-US": "zhu zhu of food would usually don't go to nashville do not have to bounce to shop should use",
+    "fr-FR": "je joue aux football je joue bien en football je nage je nage bien je danse je chante je lis"
+    },
     "time_taken": 1.9239821434020996
 }
 ...
