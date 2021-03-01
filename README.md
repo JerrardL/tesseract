@@ -21,6 +21,7 @@ for which they will provide output, along with how to download the required mode
 - [TL;DR (Running The App)](#tldr-running-the-app)
 - [In Production](#in-production)
     - [Speech Support](#speech-recognition-support)
+    - [GPU Acceleration](#gpu-acceleration)
 
 ## Enrichments
 ### Meta
@@ -541,5 +542,8 @@ The following is currently in production and has not yet been added to this offi
 - Adding support to detect what language is being spoken directly from audio for the speech recognition enrichment.
 - Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
 - New enrichment to translate text into different languages.
+
+#### GPU Acceleration
+- Refactoring all code to work with `tensorflow-gpu` and the [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) for GPU acceleration, this improving processing time and allowing for more detailed models to be used.
 
 [BACK TO TOP](#file-information-extractor)
