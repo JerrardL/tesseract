@@ -186,7 +186,15 @@ Provided you downloaded the models for [image classification](#image-classificat
         ],
 ...
 ```
-Remember that Object Frequency relates to how many times the detector has detected that object, per frame, as a total of all frames combined, not how many of that object was detected in the video.
+The detection speed can be altered to provide more or less accuracy at the cost of speed. Currently, the detection speed is set to 'Flash', which is the fastest processing speed, and reduces time taken to detect images from a 'normal' speed by around 40%. In doing this, objects detected may be less accurate along with its frequency. The different detection speeds in order of most accurate to quickest response are as follows:
+- Normal
+- Fast
+- Faster
+- Fastest
+- Flash
+
+The detection speed can be altered in the main `config.json` file.
+**Remember** that Object Frequency relates to how many times the detector has detected that object, per frame, as a total of all frames combined, not how many of that object was detected in the video.
 
 [BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
 
