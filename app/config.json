@@ -132,7 +132,8 @@
         "video/wemb",
         "video/mp4",
         "application/mp4"
-      ]
+      ],
+      "detection_speed": "flash"
     },
     "ImageAICategorisation": {
       "endpoint": "http://categorisation:6060/imageai",
@@ -164,7 +165,8 @@
         "image/jpg",
         "image/jpeg",
         "image/gif"
-      ]
+      ],
+      "detection_speed": "flash"
     },
     "TextSentimentAnalysis": {
       "endpoint": "http://text_sentiment_analysis:5553",

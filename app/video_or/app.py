@@ -3,6 +3,11 @@ from imageai.Detection import VideoObjectDetection
 import os
 import operator
 from collections import OrderedDict
+import json
+with open("/config.json") as config_file:
+    config = json.load(config_file)
+
+vor_config = config["enrichments"]["VideoOR"]
 
 app = Flask(__name__)
 
@@ -10,7 +15,8 @@ detector = VideoObjectDetection()
 detector.setModelTypeAsYOLOv3()
 execution_path = os.getcwd()
 detector.setModelPath(os.path.join(execution_path, "/models/object_recognition/yolo.h5"))
-detector.loadModel(detection_speed="flash")
+
+detector.loadModel(detection_speed=vor_config["detection_speed"])
 
 @app.route('/', methods=['POST'])
 def video_or():

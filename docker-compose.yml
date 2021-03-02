@@ -45,7 +45,7 @@ services:
         depends_on: 
             - tika
         volumes:
-        -   ../models:/models
+            - ../models:/models
 
     keras_classification:
         build: ./app/keras_classification
@@ -55,7 +55,7 @@ services:
         depends_on: 
             - tika
         volumes:
-        -   ../models:/models
+            - ../models:/models
 
     categorisation:
         build: ./app/categorisation
@@ -66,7 +66,7 @@ services:
             - keras_classification
             - imageai_classification
         volumes:
-        -   ../models:/models
+            - ../models:/models
 
     language:
         build: ./app/language
@@ -84,7 +84,8 @@ services:
         depends_on:
             - tika
         volumes:
-        -   ../models:/models
+            - ../models:/models
+            - ../tesseract/app/config.json:/config.json
 
     imageai_classification:
         build: ./app/imageai_classification
@@ -94,7 +95,7 @@ services:
         depends_on:
             - tika
         volumes:
-        -   ../models:/models
+            - ../models:/models
 
     text_sentiment_analysis:
         build: ./app/text_sentiment_analysis
@@ -104,7 +105,7 @@ services:
         depends_on:
             - tika
         volumes:
-        -   ../models:/models
+            - ../models:/models
 
     nsfw_classifier:
         build: ./app/nsfw_classifier
@@ -112,7 +113,7 @@ services:
         ports:
             - "9990:5000"
         volumes:
-        -   ../models:/models
+            - ../models:/models
 
     nsfw_detector:
         build: ./app/nsfw_detector
@@ -122,7 +123,7 @@ services:
         depends_on:
             - nsfw_classifier
         volumes:
-        -   ../models:/models
+            - ../models:/models
 
     facial_expression:
         build: ./app/facial_expression

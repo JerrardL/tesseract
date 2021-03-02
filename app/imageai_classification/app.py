@@ -3,6 +3,11 @@ from imageai.Detection import ObjectDetection
 import os
 import operator
 from collections import OrderedDict
+import json
+with open("/config.json") as config_file:
+    config = json.load(config_file)
+
+ai_config = config["enrichments"]["VideoOR"]
 
 app = Flask(__name__)
 
@@ -10,7 +15,7 @@ detector = ObjectDetection()
 detector.setModelTypeAsYOLOv3()
 execution_path = os.getcwd()
 detector.setModelPath(os.path.join(execution_path, "/models/object_recognition/yolo.h5"))
-detector.loadModel(detection_speed="normal")
+detector.loadModel(detection_speed=ai_config["detection_speed"])
 
 @app.route('/', methods=['POST'])
 def classify():

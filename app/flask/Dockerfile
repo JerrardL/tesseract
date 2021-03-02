@@ -1,6 +1,7 @@
-FROM python:alpine
+FROM python:3.6
 
-RUN apk add --no-cache ffmpeg
+RUN apt-get update \
+&& apt-get install ffmpeg -y
 
 RUN pip3 install --upgrade pip flask requests pydub
 
