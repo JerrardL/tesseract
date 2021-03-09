@@ -96,6 +96,7 @@ services:
             - tika
         volumes:
             - ../models:/models
+            - ../tesseract/app/config.json:/config.json
 
     text_sentiment_analysis:
         build: ./app/text_sentiment_analysis
