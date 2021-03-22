@@ -19,8 +19,9 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-
-
+tf.compat.v1.disable_v2_behavior()
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 class Vocabulary(object):
     """Vocabulary class for an image-to-text model."""
 
@@ -39,11 +40,11 @@ class Vocabulary(object):
           end_word: Special word denoting sentence end.
           unk_word: Special word denoting unknown words.
         """
-        if not tf.gfile.Exists(vocab_file):
-            tf.logging.fatal("Vocab file %s not found.", vocab_file)
-        tf.logging.info("Initializing vocabulary from file: %s", vocab_file)
+        if not tf.compat.v1.gfile.Exists(vocab_file):
+            tf.compat.v1.logging.fatal("Vocab file %s not found.", vocab_file)
+        tf.compat.v1.logging.info("Initializing vocabulary from file: %s", vocab_file)
 
-        with tf.gfile.GFile(vocab_file, mode="r") as f:
+        with tf.compat.v1.gfile.GFile(vocab_file, mode="r") as f:
             reverse_vocab = list(f.readlines())
         reverse_vocab = [line.split()[0] for line in reverse_vocab]
         if start_word not in reverse_vocab:
@@ -54,7 +55,7 @@ class Vocabulary(object):
             reverse_vocab.append(unk_word)
         vocab = dict([(x, y) for (y, x) in enumerate(reverse_vocab)])
 
-        tf.logging.info("Created vocabulary with %d words" % len(vocab))
+        tf.compat.v1.logging.info("Created vocabulary with %d words" % len(vocab))
 
         self.vocab = vocab  # vocab[word] = id
         self.reverse_vocab = reverse_vocab  # reverse_vocab[id] = word

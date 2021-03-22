@@ -46,6 +46,11 @@ services:
             - tika
         volumes:
             - ../models:/models
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                    - capabilities: [gpu]         
 
     keras_classification:
         build: ./app/keras_classification
@@ -56,6 +61,11 @@ services:
             - tika
         volumes:
             - ../models:/models
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                    - capabilities: [gpu]            
 
     categorisation:
         build: ./app/categorisation
@@ -63,10 +73,15 @@ services:
         ports:
             - "6060:5000"
         depends_on: 
-            - keras_classification
+            # - keras_classification
             - imageai_classification
         volumes:
             - ../models:/models
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                    - capabilities: [gpu]
 
     language:
         build: ./app/language
@@ -86,6 +101,11 @@ services:
         volumes:
             - ../models:/models
             - ../tesseract/app/config.json:/config.json
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                    - capabilities: [gpu]            
 
     imageai_classification:
         build: ./app/imageai_classification
@@ -97,6 +117,11 @@ services:
         volumes:
             - ../models:/models
             - ../tesseract/app/config.json:/config.json
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                    - capabilities: [gpu]
 
     text_sentiment_analysis:
         build: ./app/text_sentiment_analysis
@@ -133,3 +158,8 @@ services:
             - "8411:5000"
         depends_on: 
             - tika
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                    - capabilities: [gpu]

@@ -42,7 +42,7 @@ class ModelWrapper(MAXModelWrapper):
                                                        path)
         g.finalize()
         self.model = model
-        sess = tf.Session(graph=g)
+        sess = tf.compat.v1.Session(graph=g)
         # Load the model from checkpoint.
         restore_fn(sess)
         self.sess = sess

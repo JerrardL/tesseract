@@ -17,6 +17,9 @@
 from maxfw.core import MAXApp
 from api import ModelMetadataAPI, ModelPredictAPI
 from config import API_TITLE, API_DESC, API_VERSION
+import tensorflow as tf
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 max_app = MAXApp(API_TITLE, API_DESC, API_VERSION)
 max_app.add_api(ModelMetadataAPI, '/metadata')

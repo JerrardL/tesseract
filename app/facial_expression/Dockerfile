@@ -1,10 +1,17 @@
-FROM python:3.6
+FROM nvidia/cuda:11.0.3-cudnn8-devel-ubuntu20.04
 
 ADD ./requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
+RUN apt-get update \
+&& apt-get install python3 -y
+RUN apt-get install python3-pip -y \
+&& DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ffmpeg libsm6 libxext6
+
+RUN pip3 install --upgrade pip \
+&& pip3 install wheel \
+&& pip3 install -r /requirements.txt
 
 WORKDIR /app
 
 COPY . /app
 
-CMD python app.py
+CMD python3 app.py

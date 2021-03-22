@@ -20,7 +20,9 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-
+tf.compat.v1.disable_v2_behavior()
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 def parse_sequence_example(serialized, image_feature, caption_feature):
     """Parses a tensorflow.SequenceExample into an image and caption.
@@ -87,23 +89,23 @@ def prefetch_input_data(reader,
     for pattern in file_pattern.split(","):
         data_files.extend(tf.gfile.Glob(pattern))
     if not data_files:
-        tf.logging.fatal("Found no input files matching %s", file_pattern)
+        tf.compat.v1.logging.fatal("Found no input files matching %s", file_pattern)
     else:
-        tf.logging.info("Prefetching values from %d files matching %s",
+        tf.compat.v1.logging.info("Prefetching values from %d files matching %s",
                         len(data_files), file_pattern)
 
     if is_training:
-        filename_queue = tf.train.string_input_producer(
+        filename_queue = tf.compat.v1.train.string_input_producer(
             data_files, shuffle=True, capacity=16, name=shard_queue_name)
         min_queue_examples = values_per_shard * input_queue_capacity_factor
         capacity = min_queue_examples + 100 * batch_size
-        values_queue = tf.RandomShuffleQueue(
+        values_queue = tf.compat.v1.RandomShuffleQueue(
             capacity=capacity,
             min_after_dequeue=min_queue_examples,
             dtypes=[tf.string],
             name="random_" + value_queue_name)
     else:
-        filename_queue = tf.train.string_input_producer(
+        filename_queue = tf.compat.v1.train.string_input_producer(
             data_files, shuffle=False, capacity=1, name=shard_queue_name)
         capacity = values_per_shard + 3 * batch_size
         values_queue = tf.FIFOQueue(
@@ -113,9 +115,9 @@ def prefetch_input_data(reader,
     for _ in range(num_reader_threads):
         _, value = reader.read(filename_queue)
         enqueue_ops.append(values_queue.enqueue([value]))
-    tf.train.queue_runner.add_queue_runner(tf.train.queue_runner.QueueRunner(
+    tf.compat.v1.train.queue_runner.add_queue_runner(tf.compat.v1.train.queue_runner.QueueRunner(
         values_queue, enqueue_ops))
-    tf.summary.scalar(
+    tf.compat.v1.summary.scalar(
         "queue/%s/fraction_of_%d_full" % (values_queue.name, capacity),
         tf.cast(values_queue.size(), tf.float32) * (1. / capacity))
 
@@ -195,9 +197,9 @@ def batch_with_dynamic_pad(images_and_captions,
         name="batch_and_pad")
 
     if add_summaries:
-        lengths = tf.add(tf.reduce_sum(mask, 1), 1)
-        tf.summary.scalar("caption_length/batch_min", tf.reduce_min(lengths))
-        tf.summary.scalar("caption_length/batch_max", tf.reduce_max(lengths))
-        tf.summary.scalar("caption_length/batch_mean", tf.reduce_mean(lengths))
+        lengths = tf.add(tf.compat.v1.reduce_sum(mask, 1), 1)
+        tf.compat.v1.summary.scalar("caption_length/batch_min", tf.compat.v1.reduce_min(lengths))
+        tf.compat.v1.summary.scalar("caption_length/batch_max", tf.compat.v1.reduce_max(lengths))
+        tf.compat.v1.summary.scalar("caption_length/batch_mean", tf.compat.v1.reduce_mean(lengths))
 
     return images, input_seqs, target_seqs, mask

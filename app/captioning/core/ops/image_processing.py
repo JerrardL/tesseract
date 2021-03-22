@@ -20,7 +20,9 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-
+tf.compat.v1.disable_v2_behavior()
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 def distort_image(image, thread_id):
     """Perform random distortions on an image.
@@ -35,22 +37,22 @@ def distort_image(image, thread_id):
         [0, 1].
     """
     # Randomly flip horizontally.
-    with tf.name_scope("flip_horizontal", values=[image]):
-        image = tf.image.random_flip_left_right(image)
+    with tf.compat.v1.name_scope("flip_horizontal", values=[image]):
+        image = tf.compat.v1.image.random_flip_left_right(image)
 
     # Randomly distort the colors based on thread id.
     color_ordering = thread_id % 2
-    with tf.name_scope("distort_color", values=[image]):
+    with tf.compat.v1.name_scope("distort_color", values=[image]):
         if color_ordering == 0:
-            image = tf.image.random_brightness(image, max_delta=32. / 255.)
-            image = tf.image.random_saturation(image, lower=0.5, upper=1.5)
-            image = tf.image.random_hue(image, max_delta=0.032)
-            image = tf.image.random_contrast(image, lower=0.5, upper=1.5)
+            image = tf.compat.v1.image.random_brightness(image, max_delta=32. / 255.)
+            image = tf.compat.v1.image.random_saturation(image, lower=0.5, upper=1.5)
+            image = tf.compat.v1.image.random_hue(image, max_delta=0.032)
+            image = tf.compat.v1.image.random_contrast(image, lower=0.5, upper=1.5)
         elif color_ordering == 1:
-            image = tf.image.random_brightness(image, max_delta=32. / 255.)
-            image = tf.image.random_contrast(image, lower=0.5, upper=1.5)
-            image = tf.image.random_saturation(image, lower=0.5, upper=1.5)
-            image = tf.image.random_hue(image, max_delta=0.032)
+            image = tf.compat.v1.image.random_brightness(image, max_delta=32. / 255.)
+            image = tf.compat.v1.image.random_contrast(image, lower=0.5, upper=1.5)
+            image = tf.compat.v1.image.random_saturation(image, lower=0.5, upper=1.5)
+            image = tf.compat.v1.image.random_hue(image, max_delta=0.032)
 
         # The random_* ops do not necessarily clamp.
         image = tf.clip_by_value(image, 0.0, 1.0)
@@ -92,17 +94,17 @@ def process_image(encoded_image,
     # only logged in thread 0.
     def image_summary(name, image):
         if not thread_id:
-            tf.summary.image(name, tf.expand_dims(image, 0))
+            tf.compat.v1.summary.image(name, tf.expand_dims(image, 0))
 
     # Decode image into a float32 Tensor of shape [?, ?, 3] with values in [0, 1).
-    with tf.name_scope("decode", values=[encoded_image]):
+    with tf.compat.v1.name_scope("decode", values=[encoded_image]):
         if image_format == "jpeg":
-            image = tf.image.decode_jpeg(encoded_image, channels=3)
+            image = tf.compat.v1.image.decode_jpeg(encoded_image, channels=3)
         elif image_format == "png":
-            image = tf.image.decode_png(encoded_image, channels=3)
+            image = tf.compat.v1.image.decode_png(encoded_image, channels=3)
         else:
             raise ValueError("Invalid image format: %s" % image_format)
-    image = tf.image.convert_image_dtype(image, dtype=tf.float32)
+    image = tf.compat.v1.image.convert_image_dtype(image, dtype=tf.float32)
     image_summary("original_image", image)
 
     # Resize image.
@@ -110,16 +112,16 @@ def process_image(encoded_image,
         raise ValueError("Invalid resize parameters height: '{0}' width: '{1}'".format(resize_height, resize_width))
 
     if resize_height:
-        image = tf.image.resize_images(image,
+        image = tf.compat.v1.image.resize_images(image,
                                        size=[resize_height, resize_width],
-                                       method=tf.image.ResizeMethod.BILINEAR)
+                                       method=tf.compat.v1.image.ResizeMethod.BILINEAR)
 
     # Crop to final dimensions.
     if is_training:
-        image = tf.random_crop(image, [height, width, 3])
+        image = tf.compat.v1.random_crop(image, [height, width, 3])
     else:
         # Central crop, assuming resize_height > height, resize_width > width.
-        image = tf.image.resize_image_with_crop_or_pad(image, height, width)
+        image = tf.compat.v1.image.resize_image_with_crop_or_pad(image, height, width)
 
     image_summary("resized_image", image)
 

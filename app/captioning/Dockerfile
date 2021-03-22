@@ -14,13 +14,19 @@
 # limitations under the License.
 #
 
-FROM quay.io/codait/max-base:v1.3.2
+FROM nvidia/cuda:11.0.3-cudnn8-devel-ubuntu20.04
 
-WORKDIR /workspace
+ADD ./requirements.txt /requirements.txt
+RUN apt-get update \
+&& apt-get install python3 -y
+RUN apt-get install python3-pip -y
 
-COPY requirements.txt /workspace
-RUN pip install -r requirements.txt
+RUN pip3 install --upgrade pip \
+&& pip3 install -r /requirements.txt \
+&& DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ffmpeg
 
-COPY . /workspace
+WORKDIR /app
 
-CMD python app.py
+COPY . /app
+
+CMD python3 app.py
