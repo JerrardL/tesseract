@@ -581,8 +581,7 @@ Following from the CPU Guide, the enrichments listed below are capable of utilis
 ### Main Changes
 Once you have met the prerequisites you should not need to change anything, unless you changed your driver version and are using a different version of CUDA. Below is a summary of main code changes that differ from the CPU version:
 - Captioning has been refactored to work with Tensorflow 2.x, instead of Tensorflow 1.15.
-- Captioning, Image Clasification (Keras and Image AI), Video Object Recognition and Facial Expression now include some Tensorflow configuration for GPU memory.
-- Captioning, Image Clasification (Keras and Image AI), Video Object Recognition and Facial Expression use a different base docker image, provided by [NVIDIA NGC](https://ngc.nvidia.com/catalog/containers).
+- Captioning, Image Clasification (Keras and Image AI), Video Object Recognition and Facial Expression now include some Tensorflow configuration for GPU memory and use a different base docker image, provided by [NVIDIA NGC](https://ngc.nvidia.com/catalog/containers). The respective `requirements.txt` files have been altered it remove tensorflow as it is included in the docker image.
 
 ### CUDA Docker Image
 The enrichments mentioned earlier all use a specific base docker image, provided by NVIDIA NGC which comprises of the CUDA Toolkit version, CuDNN, TensorRT, Tensorflow and other useful tools and features. As this application uses CUDA 11.2, the docker image being used is `nvcr.io/nvidia/tensorflow:21.02-tf2-py3`. Documentation can be found [here](https://docs.nvidia.com/deeplearning/frameworks/tensorflow-release-notes/rel_21-02.html#rel_21-02).
