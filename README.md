@@ -24,9 +24,10 @@ for which they will provide output, along with how to download the required mode
 - [TL;DR (Running The App)](#tldr-running-the-app)
 - [In Production](#in-production)
     - [Speech Support](#speech-recognition-support)
-    - [GPU Acceleration](#gpu-acceleration)
 ## GPU Contents
 - [Prerequisites](#prerequisites)
+- [Main Changes](#main-changes)
+- [CUDA Docker Image](#cuda-docker-image)
 
 ## Enrichments
 ### Meta
@@ -561,9 +562,33 @@ The following is currently in production and has not yet been added to this offi
 The Tesseract application can also be run using NVIDIA GPU enabled devices to allow for faster processing and use of more detailed ML models. This GPU version still uses the same enrichments and they all work in the same manner. This guide will only touch on the differences between this and the CPU version, which will only relate to select models and their configuration. **Ensure that you have followed the main CPU Guide for overall setup before continuing with this GPU setup.** The code for this version can be found on the `tesseract-cuda` branch of this repository. The `tesseract-cuda` branch is comprised of all the code from the main tesseract `master` branch, along with the code configuration differences required for it to work with CUDA. Alongside these changes, you will need to make some environment checks and changes to ensure the application will run correctly.  
 
 Following from the CPU Guide, the enrichments listed below are capable of utilising GPU features and have been changed:
-- [CPU Image Captioning](#image-captioning-cpu)
-- [CPU Image Classification](#image-classification-cpu)
-- [CPU Video Object Recognition](#video-object-recognition-cpu)
-- [CPU Facial Expressions](#facial-expressions-cpu)
+- Image Captioning
+- Image Classification
+- Video Object Recognition
+- Facial Expressions
 
-[BACK TO TOP](#file-information-extractor)
+**Before you can use this version you must ensure your device meets minimum requirements:**
+1. **Your device MUST BE NVIDIA GPU enabled.**
+    - A quick way to check is by typing `nvidia-smi` on terminal. The application will not work without a NVIDIA GPU.
+2. **An installed NVIDIA Driver that meets the minimum CUDA Toolkit requirements.**
+    - This application uses CUDA 11.2, which requires a driver version of *at least 460.27.04*.
+        > Driver versions have required compute capability. If you know your hardware generation, you can check for compatibility [here](https://docs.nvidia.com/deploy/cuda-compatibility/index.html#support-title). You can also check for different compatible driver versions there also if you can not run CUDA 11.2 and therefore need to utilise a different driver. You do not need to install the CUDA Toolkit as this will be provided in the docker image. The requirement here is a driver that is capable of running the toolkit. 
+4. **Your docker environment must have support for NVIDIA GPU's enabled.**
+    - Nvidia-Docker and NVIDIA Container Toolkit need to be installed. The installion guide can be found [here](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker).
+5. **Your Docker-Compose version must be *at least* version 1.28.** 
+    - Note that this is ***different*** to the compose file version specified in the actual `docker-compose.yml` file.
+
+### Main Changes
+Once you have met the prerequisites you should not need to change anything, unless you changed your driver version and are using a different version of CUDA. Below is a summary of main code changes that differ from the CPU version:
+- Captioning has been refactored to work with Tensorflow 2.x, instead of Tensorflow 1.15.
+- Captioning, Image Clasification (Keras and Image AI), Video Object Recognition and Facial Expression now include some Tensorflow configuration for GPU memory.
+- Captioning, Image Clasification (Keras and Image AI), Video Object Recognition and Facial Expression use a different base docker image, provided by [NVIDIA NGC](https://ngc.nvidia.com/catalog/containers).
+
+### CUDA Docker Image
+The enrichments mentioned earlier all use a specific base docker image, provided by NVIDIA NGC which comprises of the CUDA Toolkit version, CuDNN, TensorRT, Tensorflow and other useful tools and features. As this application uses CUDA 11.2, the docker image being used is `nvcr.io/nvidia/tensorflow:21.02-tf2-py3`. Documentation can be found [here](https://docs.nvidia.com/deeplearning/frameworks/tensorflow-release-notes/rel_21-02.html#rel_21-02).
+
+If you need to use a different CUDA version, you'll need to also change the base image in all of the changed enrichment Dockerfiles. An overview of the Tensorflow container can be found [here](https://ngc.nvidia.com/catalog/containers/nvidia:tensorflow). Each tag will provide a different version of CUDA packaged with differnt versions of CuDNN, Tensorflow, and others, so ensure you read documentation for each version before using it as a base image.
+
+Once this has been done, the app can be run as usual, following the steps from [TL;DR (Running The App)](#tldr-running-the-app). 
+
+[BACK TO TOP](#tesseract-cpu-version)
