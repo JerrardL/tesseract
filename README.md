@@ -1,4 +1,4 @@
-# File Information Extractor
+# Tesseract (File Enrichments)
 This is an application that can provide various different extractions from a file type based on a variety of different enrichments.
 A file is uploaded via binary to an endpoint, and an overall JSON response is returned. Based on the file type, the JSON response will 
 return different output. Below will be a summary of the different enrichments created so far, and the corresponding supported file types
