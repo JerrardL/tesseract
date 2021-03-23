@@ -122,7 +122,7 @@ Once the models have been downloaded and the folder structure has been created, 
 ```
 `"caption"` refers to the caption the generator has provided for the image file, `"index"` refers to the caption number. The generator will provide 3 different captions, ordered by their `"probability"`.
 
-[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
+[BACK TO CONTENTS](#cpu-contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### ***
 > ***The remaining enrichments do not use docker images, and are all created from python scripts which use various different libraries and model data to function. All libraries and Python versions required for each enrichment to work are specified in the enrichments corresponding requirements file and Dockerfile, which will install the libraries needed. Certain enrichments, such as Speech Recognition, require the models to be set up in a certain way from within the `models/` directory in order for them to be read correctly. Instructions will also be provided on how to set up these folders. Ensure that you have followed the first step in the [Model Setup](#model-setup) so that you have already got a base model structure before continuing.***
@@ -161,7 +161,7 @@ Once the models have been downloaded and the folder structure has been created, 
 ```
 ImageAI classification includes the object found, along with the percentage probability for that object. Keras classification includes 3 different predictions, based on confidence levels.
 
-[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
+[BACK TO CONTENTS](#cpu-contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### Video Object Recognition (CPU)
 This enrichment attempts to name and detect objects within a video file. It works in a similar way to [Image Classification](#image-classification) for ImageAI. The only real difference is the detector is detecting video and not an image file. Esentially the video function looks at every frame, and treats each frame as an image, looking for objects to detect. It will produce an object frequency, showing how many times it detected an object. This **is not** in correlation to how many objects of that type are in the video. As the function goes through each frame individually, it counts the objects detected in each frame, and provides a tallied result. Object Frequency can be seen as a good way to see what objects are most prominent in a video. Supported types for Video Object Recognition include:
@@ -201,7 +201,7 @@ The detection speed can be altered to provide more or less accuracy at the cost 
 The detection speed can be altered in the main `config.json` file.
 **Remember** that Object Frequency relates to how many times the detector has detected that object, per frame, as a total of all frames combined, not how many of that object was detected in the video.
 
-[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
+[BACK TO CONTENTS](#cpu-contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### Categorisation
 This enrichment provides categorisation on image and video files which have already been classified. This works by using the classified results from image classification or video object recognition to categorise them into departments which share similarities. This works using a gloVe text file which contains a vast amount of words which have been placed into pre defined categories. gloVe represents [Global Vectors for Word Representation](https://nlp.stanford.edu/projects/glove/); a learning algorithm created by people at Stanford University. Categorisation is dependant on classification. It will not work if an image or video has not been classified. Therefore it shares the same supported file types.
@@ -241,7 +241,7 @@ Once the models have been downloaded and the folder structure has been created, 
 ...
 ```
 
-[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
+[BACK TO CONTENTS](#cpu-contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### Speech Recognition
 This enrichment provides speech recognition by transcribing spoken audio detected in both audio and video files into text. This is done from a python script which uses the SpeechRecognition (SR) library. Supported types for Speech Recognition include:
@@ -330,7 +330,7 @@ Below is an extract example of the Speech Recognition output for video and audio
 ...
 ```
 
-[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
+[BACK TO CONTENTS](#cpu-contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### Text Sentiment Analysis
 This enrichment provides sentiment analysis on text that has been extracted from image, video, or audio files. This uses the VADER library, within the [NLTK](https://www.nltk.org/) library to provide sentiment analysis on any text that has been extracted. The sentiment result will show how strong it things the text can be perceived as positive, negative or neutral. There is also a compound response which uses a different measurement. It is a summation of valence scores of each word in the lexicon, normalised to values between -1 being most extreme negative, and 1 being most extreme positive. The idea is that you can have have an overall positive sentiment, which may contain stronger classed negative words, but not enough to change the overall text sentiment. Supported types for text sentiment analysis include:
@@ -376,7 +376,7 @@ Once the models have been downloaded and the folder structure has been created, 
 ...
 ```
 
-[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
+[BACK TO CONTENTS](#cpu-contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### NSFW Analysis
 This enrichment detects if material in an image or video is sexually explicit and considered not safe for work (nsfw). This is done using the python library [NudeNet](https://github.com/notAI-tech/NudeNet). NSFW Analysis is comprised of two sub enrichments:
@@ -443,7 +443,7 @@ Once the models have been downloaded and the folder structure has been created, 
 ```
 A complete list of detector classes that the nsfw detector can detect can be found via the [NudeNet git repository](https://github.com/notAI-tech/NudeNet).
 
-[BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
+[BACK TO CONTENTS](#cpu-contents) | [RUN THE APP](#tldr-running-the-app)
 
 ### Facial Expressions (CPU)
 A new enrichment which can detect facial expressions from faces detected in image and video files. This is done using the facial expression recogniser library, `fer`. More information on this and how the library works can be found via their GitHub [here](https://github.com/justinshenk/fer). If faces have been detected in the image, the detector will produce an output containing six different emotional categories:
@@ -487,7 +487,7 @@ As this enrichment solely uses a python library, **additional models and/or data
 ...
 ```  
 
-[BACK TO CONTENTS](#contents)
+[BACK TO CONTENTS](#cpu-contents)
 
 ### Model Structure
 After creating your model structure and downloading and renaming the models, your structure should look similar to this:
