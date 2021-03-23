@@ -1,27 +1,32 @@
-# Tesseract (File Enrichments)
+# Tesseract (CPU Version)
 This is an application that can provide various different extractions from a file type based on a variety of different enrichments.
 A file is uploaded via binary to an endpoint, and an overall JSON response is returned. Based on the file type, the JSON response will 
 return different output. Below will be a summary of the different enrichments created so far, and the corresponding supported file types
 for which they will provide output, along with how to download the required models where necessary. You can read through each enrichment, or jump to the TL;DR section from the contents for quick text on installation and how to download the models.
-## Contents
+
+**This version of Tesseract is designed to work with CPU. The Tesseract application has also been created to work with NVIDIA GPU enabled devices via CUDA** and its libraries including [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) & [CuDNN](https://developer.nvidia.com/cudnn), to allow for faster processing for applicaple models. Code for this will be located on the `tesseract-cuda` branch of this repository. Whilst most code remains the same, there are some important changes including models and code configuration. The guide for setting up Tesseract with CUDA will follow this CPU guide, which can be accessed from the contents.
+
+## CPU Contents
 - [Meta](#meta)
 - [Optical Character Recognition (OCR)](#optical-character-recognition-ocr)
 - [Natural Language Processing (NLP)](#natural-language-processing-nlp)
-- [Image Captioning](#image-captioning)
+- [CPU Image Captioning](#image-captioning-cpu)
 - [Model Setup](#model-setup)
-- [Image Classification](#image-classification)
-- [Video Object Recognition](#video-object-recognition)
+- [CPU Image Classification](#image-classification-cpu)
+- [CPU Video Object Recognition](#video-object-recognition-cpu)
 - [Categorisation](#categorisation)
 - [Speech Recognition](#speech-recognition)
     - [Non-English Transcription](#transcribing-other-non-english-languages)
 - [Text Sentiment Analysis](#text-sentiment-analysis)
 - [NSFW Analysis](#nsfw-analysis)
-- [Facial Expressions](#facial-expressions)
+- [CPU Facial Expressions](#facial-expressions-cpu)
 - [Model Structure](#model-structure)
 - [TL;DR (Running The App)](#tldr-running-the-app)
 - [In Production](#in-production)
     - [Speech Support](#speech-recognition-support)
     - [GPU Acceleration](#gpu-acceleration)
+## GPU Contents
+- [Prerequisites](#prerequisites)
 
 ## Enrichments
 ### Meta
@@ -81,7 +86,7 @@ This enrichment provides NLP on files where text has been extracted. NLP works b
 ```
 `"end"` refers to the location of the last character, whilst `"start"` refers to the first. `"text"` is the text that was picked up and `"type"` is the category type that spaCy has determined for the text. More information on different types and how spaCy works can be found from the GitHub documentation, located in the link provided above.
 
-### Image Captioning
+### Image Captioning (CPU)
 This enrichment provides image captioning for image files. This is done using a docker image, and corresponding python script files which work with the image. The docker image is an Image Caption Generator, provided by Codait, as part of an IBM Developer Code Model Asset Exchange. The docker hub link can be found [here](https://hub.docker.com/r/codait/max-image-caption-generator). Captioning works using [Tensorflow](https://www.tensorflow.org/) framework, and different ML computer vision models, which have been trained using the [COCO Dataset](https://cocodataset.org/#home). Supported types for Image Captioning include:
 ```
 image/png,
@@ -123,7 +128,7 @@ Once the models have been downloaded and the folder structure has been created, 
 > ***The remaining enrichments do not use docker images, and are all created from python scripts which use various different libraries and model data to function. All libraries and Python versions required for each enrichment to work are specified in the enrichments corresponding requirements file and Dockerfile, which will install the libraries needed. Certain enrichments, such as Speech Recognition, require the models to be set up in a certain way from within the `models/` directory in order for them to be read correctly. Instructions will also be provided on how to set up these folders. Ensure that you have followed the first step in the [Model Setup](#model-setup) so that you have already got a base model structure before continuing.***
 ### ***
 
-### Image Classification
+### Image Classification (CPU)
 This enrichment provides classification on image files that have already gone through image captioning. Classification attempts to detect and name the objects found within an image. This is done from a variety of python script files which use different libraries depending on the framework being used. Images will go through two sets of classification.
 - **Keras Classification**, where images will be classified using the [Keras](https://keras.io/) API and VGG16 computer vision model, trained with data from [ImageNet](http://www.image-net.org/).
 - **ImageAI Classification**, where images will be classified using the ImageAI framework, which uses a [YoloV3](https://pjreddie.com/darknet/yolo/) model for detection, trained with its own data.
@@ -158,7 +163,7 @@ ImageAI classification includes the object found, along with the percentage prob
 
 [BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
 
-### Video Object Recognition
+### Video Object Recognition (CPU)
 This enrichment attempts to name and detect objects within a video file. It works in a similar way to [Image Classification](#image-classification) for ImageAI. The only real difference is the detector is detecting video and not an image file. Esentially the video function looks at every frame, and treats each frame as an image, looking for objects to detect. It will produce an object frequency, showing how many times it detected an object. This **is not** in correlation to how many objects of that type are in the video. As the function goes through each frame individually, it counts the objects detected in each frame, and provides a tallied result. Object Frequency can be seen as a good way to see what objects are most prominent in a video. Supported types for Video Object Recognition include:
 ```
 video/mpeg,
@@ -440,7 +445,7 @@ A complete list of detector classes that the nsfw detector can detect can be fou
 
 [BACK TO CONTENTS](#contents) | [RUN THE APP](#tldr-running-the-app)
 
-### Facial Expressions
+### Facial Expressions (CPU)
 A new enrichment which can detect facial expressions from faces detected in image and video files. This is done using the facial expression recogniser library, `fer`. More information on this and how the library works can be found via their GitHub [here](https://github.com/justinshenk/fer). If faces have been detected in the image, the detector will produce an output containing six different emotional categories:
 - **Anger**
 - **Disgust**
@@ -551,7 +556,14 @@ The following is currently in production and has not yet been added to this offi
 - Adding support for different audio types other than .wav to be accepted by the speech recognition enrichment.
 - New enrichment to translate text into different languages.
 
-#### GPU Acceleration
-- Refactoring all code to work with `tensorflow-gpu` and the [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) for GPU acceleration, this improving processing time and allowing for more detailed models to be used.
+# Tesseract (GPU Version)
+### Prerequisites
+The Tesseract application can also be run using NVIDIA GPU enabled devices to allow for faster processing and use of more detailed ML models. This GPU version still uses the same enrichments and they all work in the same manner. This guide will only touch on the differences between this and the CPU version, which will only relate to select models and their configuration. **Ensure that you have followed the main CPU Guide for overall setup before continuing with this GPU setup.** The code for this version can be found on the `tesseract-cuda` branch of this repository. The `tesseract-cuda` branch is comprised of all the code from the main tesseract `master` branch, along with the code configuration differences required for it to work with CUDA. Alongside these changes, you will need to make some environment checks and changes to ensure the application will run correctly.  
+
+Following from the CPU Guide, the enrichments listed below are capable of utilising GPU features and have been changed:
+- [CPU Image Captioning](#image-captioning-cpu)
+- [CPU Image Classification](#image-classification-cpu)
+- [CPU Video Object Recognition](#video-object-recognition-cpu)
+- [CPU Facial Expressions](#facial-expressions-cpu)
 
 [BACK TO TOP](#file-information-extractor)
