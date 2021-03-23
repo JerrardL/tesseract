@@ -20,6 +20,11 @@ from config import API_TITLE, API_DESC, API_VERSION
 import tensorflow as tf
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
+if physical_devices:
+  try:
+    tf.config.experimental.set_virtual_device_configuration(physical_devices[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
+  except RuntimeError as e:
+    print(e)
 
 max_app = MAXApp(API_TITLE, API_DESC, API_VERSION)
 max_app.add_api(ModelMetadataAPI, '/metadata')

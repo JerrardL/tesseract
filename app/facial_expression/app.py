@@ -1,6 +1,14 @@
 from flask import Flask, request, jsonify
 from fer import FER
 import cv2
+import tensorflow as tf
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
+if physical_devices:
+  try:
+    tf.config.experimental.set_virtual_device_configuration(physical_devices[0], [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=4096)])
+  except RuntimeError as e:
+    print(e)
 
 app = Flask(__name__)
 

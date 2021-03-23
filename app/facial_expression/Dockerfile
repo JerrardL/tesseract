@@ -1,9 +1,8 @@
-FROM nvidia/cuda:11.0.3-cudnn8-devel-ubuntu20.04
+FROM nvcr.io/nvidia/tensorflow:21.02-tf2-py3
 
 ADD ./requirements.txt /requirements.txt
 RUN apt-get update \
-&& apt-get install python3 -y
-RUN apt-get install python3-pip -y \
+&& apt-get install python3-pip -y \
 && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ffmpeg libsm6 libxext6
 
 RUN pip3 install --upgrade pip \
@@ -14,4 +13,4 @@ WORKDIR /app
 
 COPY . /app
 
-CMD python3 app.py
+CMD python app.py
